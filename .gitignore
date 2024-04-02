@@ -1,6 +1,6 @@
 *.exe
 *.o
-lib
 lib/**/*
 .vscode/**/*
 .vscode
+!lib/info.txt
