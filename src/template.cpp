@@ -36,7 +36,7 @@ public:
   /**
    * @brief Default constructor for the Board class.
    */
-  Board();
+  Board() {};
 
   /**
    * @brief Display the board.
@@ -97,7 +97,7 @@ public:
    * @return true If all ships have been sunk.
    * @return false If not all ships have been sunk.
    */
-  bool allShipsSunk();
+  bool allShipsSunk() {return true;};
 
   /**
    * @brief Check if a position is occupied by a ship.
@@ -128,7 +128,9 @@ public:
    *
    * @return Point A random point on the board.
    */
-  Point getRandomPoint();
+  Point getRandomPoint() {
+    return {0, 0};
+  };
 };
 
 /**
@@ -169,27 +171,27 @@ private:
    *
    * This function is called when it is the player's turn to make a move.
    */
-  void playerMove();
+  void playerMove() {};
 
   /**
    * @brief Executes the computer's move.
    *
    * This function is called when it is the computer's turn to make a move.
    */
-  void computerMove();
+  void computerMove() {};
 
 public:
   /**
    * @brief Default constructor for the Game class.
    */
-  Game();
+  Game() {};
 
   /**
    * @brief Starts the game.
    *
    * This function starts the game by initializing the boards, placing the ships, and executing the turns until the game is over.
    */
-  void start();
+  void start() {};
 };
 
 int main()
