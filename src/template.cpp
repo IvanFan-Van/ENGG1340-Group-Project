@@ -139,7 +139,7 @@ public:
  * @param playerBoard The player's board.
  * @param computerBoard The computer's board.
  */
-void displayBoardsSideBySide(const Board &playerBoard, const Board &computerBoard);
+void displayBoardsSideBySide(const Board &playerBoard, const Board &computerBoard, bool showPlayerShips);
 
 /**
  * @class Game
@@ -150,46 +150,117 @@ void displayBoardsSideBySide(const Board &playerBoard, const Board &computerBoar
 class Game
 {
 private:
-  Board playerBoard;   // The board representing the player's ships and attacks.
-  Board computerBoard; // The board representing the computer's ships and attacks.
-  bool playerTurn;     // A flag indicating whether it is the player's turn.
+    Board playerBoard;
+    Board computerBoard;
+    bool playerTurn;
+    void placeShips(Board &board, bool isPlayer){
+        for (int shipSize : SHIPS){
+            while (true){
+                if (isPlayer){
+                    board.display(true);
+                    cout << "Place the size of ship " << shipSize << endl;
+                    cout << "Enter coordinates (e.g., A 1 0 (A:column, 1:row and orientation (0 for horizontal, 1 for vertical): ";
+                    char col;
+                    int row, orientation;
+                    cin >> col >> row >> orientation;
+                    if((col>'J'||col<'A')||(row<1||row>10)||(orientation!=0&&orientation!=1)){
+                        cout<<"invalid input value, please try again"<<endl;
+                        continue;
+                    }
+                    int x = col - 'A';
+                    int y = row - 1;
+                    if (board.isValidPlacement(x, y, shipSize, orientation == 1)){
+                        board.placeShip(x, y, shipSize, orientation == 1);
+                        break;
+                    }
+                    else{
+                        cout << "Invalid placement! Try again.\n";
+                    }
+                }
+                else{
+                    Point p = board.getRandomPoint();
+                    bool isVertical = (rand() % 2 == 0);
+                    if (board.isValidPlacement(p.x, p.y, shipSize, isVertical)){
 
-  /**
-   * @brief Places the ships on the given board.
-   *
-   * This function is used to place the ships on the board for either the player or the computer.
-   *
-   * @param board The board on which to place the ships.
-   * @param isPlayer A flag indicating whether the board belongs to the player.
-   */
-  void placeShips(Board &board, bool isPlayer);
+                        board.placeShip(p.x, p.y, shipSize, isVertical);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
-  /**
-   * @brief Executes the player's move.
-   *
-   * This function is called when it is the player's turn to make a move.
-   */
-  void playerMove();
+    void playerMove(){
+        displayBoardsSideBySide(playerBoard, computerBoard, true);//The player need to see their own boat
+        cout << "\nYour turn.\nEnter coordinates (e.g. A 1) to fire: " ;
+        char col;
+        int row;
+        cin >> col >> row;
+        while(true){
+          if((col>'J'||col<'A')||(row<1||row>10)){
+                        cout<<"invalid input value, please try again"<<endl;
+                        cin >> col >> row;
+                        
+          }
+          else{
+            break;
+          }
+        }
+        int x = col - 'A';
+        int y = row - 1;
+        if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE){
+            if (computerBoard.checkHit(x, y)){
+                cout << "Hit!\n";
+            }
+            else{
+                cout << "Miss!\n";
+            }
+        }
+        else{
+            cout << "Invalid coordinates!\n";
+        }
+    }
 
-  /**
-   * @brief Executes the computer's move.
-   *
-   * This function is called when it is the computer's turn to make a move.
-   */
-  void computerMove();
+    void computerMove(){
+        while (true){
+            Point p = playerBoard.getRandomPoint();
+            if (!playerBoard.isOccupied(p.x, p.y)){
+                if (playerBoard.checkHit(p.x, p.y)){
+                  cout << "Computer's turn: Hit at " << char('A' + p.x) << p.y + 1 << endl;
+                }
+                else{
+                  cout << "Computer's turn: Miss at " << char('A' + p.x) << p.y + 1 << endl;
+                }
+              break;
+            }
+        }
+    }
 
 public:
-  /**
-   * @brief Default constructor for the Game class.
-   */
-  Game();
+  Game(){
+    srand(time(0));
+    placeShips(playerBoard, true);
+    placeShips(computerBoard, true);
+  }
 
-  /**
-   * @brief Starts the game.
-   *
-   * This function starts the game by initializing the boards, placing the ships, and executing the turns until the game is over.
-   */
-  void start();
+  void start(){
+    while(true){
+      if(playerTurn){
+        playerMove();
+        if(computerBoard.allShipsSunk()){
+          cout<<"congratulations, you have win!"<<endl;
+          break;
+        }
+      }
+      else{
+        computerMove();
+        if(playerBoard.allShipsSunk()){
+          cout<<"Oh no, you lose."<<endl;
+          break;
+        }
+      }
+    }
+  }
 };
 
 int main()
