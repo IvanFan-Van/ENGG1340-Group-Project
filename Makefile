@@ -17,4 +17,7 @@ clean:
 	rm -f $(TARGETS:%=%.o)
 	rm -f $(TARGETS:%=%.a)
 	rm -f $(TARGETS:%=%.so)
-	rm -f $(TARGETS:%=%.d
+	rm -f $(TARGETS:%=%.d)
+
+utilities.o: utilities.cpp utilities.h
+	$(CC) $(FLAGS) -c utilities.cpp
