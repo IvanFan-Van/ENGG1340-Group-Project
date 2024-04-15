@@ -36,7 +36,16 @@ public:
   /**
    * @brief Default constructor for the Board class.
    */
-  Board();
+  Board(){
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+      for (int j = 0; j < BOARD_SIZE; j++)
+      {
+        board[i][j] = EMPTY;
+        hits[i][j] = false;
+      }
+    }
+  }
 
   /**
    * @brief Display the board.
@@ -45,7 +54,29 @@ public:
    *
    * @param showShips Whether to display ships on the board. For player, it is true; for opponent, it is false.
    */
-  void display(bool showShips);
+  void display(bool showShips){
+    cout << "  1 2 3 4 5 6 7 8 9 10\n";
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+      cout << char('A' + i) << ' ';
+      for (int j = 0; j < BOARD_SIZE; j++)
+      {
+        if (hits[i][j])
+        {
+          cout << (board[i][j] == HIT ? HIT : MISS) << ' ';
+        }
+        else if (showShips && board[i][j] == SHIP)
+        {
+          cout << SHIP << ' ';
+        }
+        else
+        {
+          cout << EMPTY << ' ';
+        }
+      }
+      cout << endl;
+    }
+  }
 
   /**
    * @brief Checks if a ship can be placed at the given position.
@@ -61,7 +92,40 @@ public:
    * @return true If the ship can be placed at the given position.
    * @return false If the ship cannot be placed at the given position (e.g., it would go off the board or overlap with another ship).
    */
-  bool isValidPlacement(int x, int y, int size, bool isVertical);
+  bool isValidPlacement(int x, int y, int size, bool isVertical)
+  {
+    if (isVertical)
+    {
+      if (x + size > BOARD_SIZE || y + 1 > BOARD_SIZE)
+      {
+        return false;
+      }
+      for (int i = x - 1; i <= x + size; ++i)
+      {
+        for (int j = y - 1; j <= y + 1; ++j)
+        {
+          if (i >= 0 && i < BOARD_SIZE && j >= 0 && j < BOARD_SIZE && board[i][j] != EMPTY)
+            return false;
+        }
+      }
+    }
+    else
+    {
+      if (y + size > BOARD_SIZE || x + 1 > BOARD_SIZE)
+      {
+        return false;
+      }
+      for (int i = x - 1; i <= x + 1; ++i)
+      {
+        for (int j = y - 1; j <= y + size; ++j)
+        {
+          if (i >= 0 && i < BOARD_SIZE && j >= 0 && j < BOARD_SIZE && board[i][j] != EMPTY)
+            return false;
+        }
+      }
+    }
+    return true;
+  }
 
   /**
    * @brief Place a ship on the board.
@@ -75,7 +139,22 @@ public:
    * @param size The size of the ship.
    * @param isVertical The orientation of the ship. If true, the ship is vertical. If false, the ship is horizontal.
    */
-  void placeShip(int x, int y, int size, bool isVertical);
+  void placeShip(int x, int y, int size, bool isVertical){
+    if (isVertical)
+    {
+      for (int i = x; i < x+size; i++)
+      {
+        board[i][y] = SHIP;
+      }
+    }
+    else
+    {
+      for (int i = y; i < y+size; i++)
+      {
+        board[x][i] = SHIP;
+      }
+    }
+  }
 
   /**
    * @brief Check if a position has been hit.
@@ -87,7 +166,35 @@ public:
    * @return true If the position has been hit.
    * @return false If the position has not been hit.
    */
-  bool checkHit(int x, int y);
+  bool checkHit(int x, int y){
+    if (hits[x][y])
+    {
+      return false;
+    }
+    hits[x][y] = true;
+    if (board[x][y] = SHIP)
+    {
+      board[x][y] = HIT;
+      int dx[] = {-1, -1, 1, 1};
+      int dy[] = {-1, 1, -1, 1};
+      for (int i = 0; i < 4; i++)
+      {
+        int newX = x + dx[i];
+        int newY = y + dy[i];
+        if (newX >= 0 && newX < BOARD_SIZE && newY >= 0 && newY < BOARD_SIZE && board[newX][newY] == EMPTY)
+        {
+          board[newX][newY] = MISS;
+          hits[newX][newY] = true;
+        }
+      }
+      return true;
+    }
+    else
+    {
+      board[x][y] = MISS;
+      return false;
+    }
+  }
 
   /**
    * @brief Check if all ships have been sunk.
@@ -97,7 +204,19 @@ public:
    * @return true If all ships have been sunk.
    * @return false If not all ships have been sunk.
    */
-  bool allShipsSunk();
+  bool allShipsSunk(){
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+      for (int j = 0; j < BOARD_SIZE; j++)
+      {
+        if (board[i][j] == SHIP)
+        {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 
   /**
    * @brief Check if a position is occupied by a ship.
@@ -109,7 +228,9 @@ public:
    * @return true If the position is occupied by a ship.
    * @return false If the position is not occupied by a ship.
    */
-  bool isOccupied(int x, int y);
+  bool isOccupied(int x, int y){
+    return board[x][y] != EMPTY;
+  }
 
   /**
    * @brief Display a row of the board.
@@ -119,7 +240,20 @@ public:
    * @param row The row number to display.
    * @param showShips Whether to display ships on the row. For player, it is true; for opponent, it is false.
    */
-  void displayRow(int row, bool showShips);
+  void displayRow(int row, bool showShips) const
+  {
+    for (int j = 0; j < BOARD_SIZE; j++)
+    {
+      if (showShips || hits[row][j])
+      {
+        cout << (hits[row][j] ? (board[row][j] == HIT ? HIT : MISS) : (board[row][j] == SHIP ? SHIP : EMPTY)) << ' ';
+      }
+      else
+      {
+        cout << EMPTY << ' ';
+      }
+    }
+  }
 
   /**
    * @brief Get a random point on the board.
@@ -128,7 +262,12 @@ public:
    *
    * @return Point A random point on the board.
    */
-  Point getRandomPoint();
+  Point getRandomPoint(){
+    Point p;
+    p.x = rand() % BOARD_SIZE;
+    p.y = rand() % BOARD_SIZE;
+    return p;
+  }
 };
 
 /**
@@ -139,7 +278,18 @@ public:
  * @param playerBoard The player's board.
  * @param computerBoard The computer's board.
  */
-void displayBoardsSideBySide(const Board &playerBoard, const Board &computerBoard);
+void displayBoardsSideBySide(const Board &playerBoard, const Board &computerBoard, bool showPlayerShips){
+  cout << "  1 2 3 4 5 6 7 8 9 10     1 2 3 4 5 6 7 8 9 10\n";
+  for (int i = 0; i < BOARD_SIZE; i++)
+  {
+    cout << char('A' + i) << ' ';
+    playerBoard.displayRow(i, showPlayerShips);
+    cout << "   ";
+    cout << char('A' + i) << ' ';
+    playerBoard.displayRow(i, false);
+    cout << endl;
+  }
+}
 
 /**
  * @class Game
