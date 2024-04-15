@@ -1,23 +1,6 @@
-#include <iostream>
-#include <vector>
-#include <cstdlib>
-#include <ctime>
-
-using namespace std;
-
-const int BOARD_SIZE = 10;
-const int SHIPS[] = {4, 3, 2, 1}; // Number of ships of each size
-const char EMPTY = '.';
-const char SHIP = 'S';
-const char HIT = 'X';
-const char MISS = 'O';
-
-struct Point
-{
-  int x;
-  int y;
-};
-
+#include "battleship/constants.h"
+#include "battleship/board.h"
+#include "battleship/board.cpp"
 /**
  * @class Board
  * @brief Represents the game board.
