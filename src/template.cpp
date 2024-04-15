@@ -1,6 +1,23 @@
-#include "battleship/constants.h"
-#include "battleship/board.h"
-#include "battleship/board.cpp"
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+const int BOARD_SIZE = 10;
+const int SHIPS[] = {4, 3, 2, 1}; // Number of ships of each size
+const char EMPTY = '.';
+const char SHIP = 'S';
+const char HIT = 'X';
+const char MISS = 'O';
+
+struct Point
+{
+  int x;
+  int y;
+};
+
 /**
  * @class Board
  * @brief Represents the game board.
@@ -19,16 +36,7 @@ public:
   /**
    * @brief Default constructor for the Board class.
    */
-  Board(){
-    for (int i = 0; i < BOARD_SIZE; i++)
-    {
-      for (int j = 0; j < BOARD_SIZE; j++)
-      {
-        board[i][j] = EMPTY;
-        hits[i][j] = false;
-      }
-    }
-  }
+  Board() {};
 
   /**
    * @brief Display the board.
@@ -187,19 +195,7 @@ public:
    * @return true If all ships have been sunk.
    * @return false If not all ships have been sunk.
    */
-  bool allShipsSunk(){
-    for (int i = 0; i < BOARD_SIZE; i++)
-    {
-      for (int j = 0; j < BOARD_SIZE; j++)
-      {
-        if (board[i][j] == SHIP)
-        {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
+  bool allShipsSunk() {return true;};
 
   /**
    * @brief Check if a position is occupied by a ship.
@@ -223,20 +219,7 @@ public:
    * @param row The row number to display.
    * @param showShips Whether to display ships on the row. For player, it is true; for opponent, it is false.
    */
-  void displayRow(int row, bool showShips) const
-  {
-    for (int j = 0; j < BOARD_SIZE; j++)
-    {
-      if (showShips || hits[row][j])
-      {
-        cout << (hits[row][j] ? (board[row][j] == HIT ? HIT : MISS) : (board[row][j] == SHIP ? SHIP : EMPTY)) << ' ';
-      }
-      else
-      {
-        cout << EMPTY << ' ';
-      }
-    }
-  }
+  void displayRow(int row, bool showShips);
 
   /**
    * @brief Get a random point on the board.
@@ -245,12 +228,9 @@ public:
    *
    * @return Point A random point on the board.
    */
-  Point getRandomPoint(){
-    Point p;
-    p.x = rand() % BOARD_SIZE;
-    p.y = rand() % BOARD_SIZE;
-    return p;
-  }
+  Point getRandomPoint() {
+    return {0, 0};
+  };
 };
 
 /**
@@ -261,18 +241,7 @@ public:
  * @param playerBoard The player's board.
  * @param computerBoard The computer's board.
  */
-void displayBoardsSideBySide(const Board &playerBoard, const Board &computerBoard, bool showPlayerShips){
-  cout << "  1 2 3 4 5 6 7 8 9 10     1 2 3 4 5 6 7 8 9 10\n";
-  for (int i = 0; i < BOARD_SIZE; i++)
-  {
-    cout << char('A' + i) << ' ';
-    playerBoard.displayRow(i, showPlayerShips);
-    cout << "   ";
-    cout << char('A' + i) << ' ';
-    playerBoard.displayRow(i, false);
-    cout << endl;
-  }
-}
+void displayBoardsSideBySide(const Board &playerBoard, const Board &computerBoard, bool showPlayerShips);
 
 /**
  * @class Game
