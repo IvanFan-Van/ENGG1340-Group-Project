@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-#include <iostream>
-#include <vector>
-#include <cstdlib>
-#include <ctime>
-
-using namespace std;
-
-struct Point
-{
-  int x;
-  int y;
-}
-=======
 #pragma once
 #include "point.h"
 #include "constants.h"
@@ -33,5 +19,4 @@ public:
     void displayRow(int row, bool showShips) const;
     bool allShipsPlaced();
     Point getRandomPoint();
->>>>>>> f7c581d642e0c0c4ca574c75d6fa755c5117cb3b
 };
