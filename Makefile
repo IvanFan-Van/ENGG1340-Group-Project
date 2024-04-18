@@ -48,4 +48,4 @@ $(BUILD_DIR)/server: $(SERVER_OBJECTS) $(filter-out $(BUILD_DIR)/battleship.o, $
 
 # clean
 clean:
-	rm -rf $(BUILD_DIR)/*.o $(BUILD_DIR)?/*.d
+	rm -rf $(BUILD_DIR)/*.o $(BUILD_DIR)/*.d
