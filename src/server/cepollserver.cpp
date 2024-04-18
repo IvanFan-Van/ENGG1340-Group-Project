@@ -51,7 +51,7 @@ bool CEpollServer::createServerSocket(const string &ip, int port)
   }
 
   return true;
-};
+}
 
 // Create epoll instance
 bool CEpollServer::createEpollInstance()
@@ -69,7 +69,7 @@ bool CEpollServer::createEpollInstance()
     return false;
   }
   return true;
-};
+}
 
 // Add file descriptor to epoll instance
 bool CEpollServer::addFdToEpoll(int fd, uint32_t events)
@@ -83,7 +83,7 @@ bool CEpollServer::addFdToEpoll(int fd, uint32_t events)
     return false;
   }
   return true;
-};
+}
 
 // Handle new client connection
 bool CEpollServer::handleNewConnection()
@@ -110,7 +110,7 @@ bool CEpollServer::handleNewConnection()
   };
   callbacks[client_fd](); // Call client connection event callback
   return true;
-};
+}
 
 // Handle client message
 bool CEpollServer::handleClientMessage(int client_fd)
@@ -142,20 +142,20 @@ bool CEpollServer::handleClientMessage(int client_fd)
     }
   }
   return true;
-};
+}
 
 // Close file descriptor
 void CEpollServer::closeFd(int fd)
 {
   cout << "Closing file descriptor: " << fd << endl;
   close(fd);
-};
+}
 
-CEpollServer::CEpollServer() : server_fd(-1), epoll_fd(-1), events(nullptr){};
+CEpollServer::CEpollServer() : server_fd(-1), epoll_fd(-1), events(nullptr) {}
 CEpollServer::~CEpollServer()
 {
   stop();
-};
+}
 
 bool CEpollServer::start(const string &ip, int port, int max_events)
 {
@@ -168,7 +168,7 @@ bool CEpollServer::start(const string &ip, int port, int max_events)
   }
   events = new epoll_event[max_events];
   return true;
-};
+}
 
 void CEpollServer::run()
 {
@@ -196,7 +196,7 @@ void CEpollServer::run()
   }
 
   stop();
-};
+}
 
 void CEpollServer::stop()
 {
@@ -215,7 +215,7 @@ void CEpollServer::stop()
     delete[] events; // Deallocate events array
     events = nullptr;
   }
-};
+}
 
 void CEpollServer::removeFd(int fd)
 {
@@ -225,12 +225,12 @@ void CEpollServer::removeFd(int fd)
 void CEpollServer::setOnClientConnected(function<void(int)> callback)
 {
   onClientConnected = callback; // Set callback for client connection event
-};
+}
 void CEpollServer::setOnClientDisconnected(function<void(int)> callback)
 {
   onClientDisconnected = callback; // Set callback for client disconnection event
-};
+}
 void CEpollServer::setOnMessageReceived(function<void(int, void *buffer, int bytes)> callback)
 {
   onMessageReceived = callback; // Set callback for message received event
-};
+}
