@@ -175,7 +175,8 @@ void Game::start()
             playerMove();
             if (computerBoard.allShipsSunk())
             {
-                cout << "Congratulations! You win!\n";
+                cout << YELLOW << "Congratulations! You win!\n"
+                     << RESET_COLOR;
                 break;
             }
         }
