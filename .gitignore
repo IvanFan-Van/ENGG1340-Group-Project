@@ -4,3 +4,4 @@ lib/**/*
 .vscode/**/*
 .vscode
 !lib/info.txt
+build
