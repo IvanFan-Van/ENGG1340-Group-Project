@@ -2,6 +2,8 @@ TARGETS = hello
 CC = g++
 FLAGS = -pedentic-error -std=c++11
 
+./build/board.o: ./src/battleship/board.cpp
+$(CC) $(FLAGS) -I ./include -c -o $@ $<
 
 .PHONY: clean
 clean:
@@ -18,6 +20,3 @@ clean:
 	rm -f $(TARGETS:%=%.a)
 	rm -f $(TARGETS:%=%.so)
 	rm -f $(TARGETS:%=%.d)
-
-utilities.o: utilities.cpp utilities.h
-	$(CC) $(FLAGS) -c utilities.cpp
