@@ -16,6 +16,7 @@ public:
     bool checkHit(int x, int y);
     bool allShipsSunk();
     bool isOccupied(int x, int y);
+    bool isHit(int x, int y);
     void displayRow(int row, bool showShips) const;
     bool allShipsPlaced();
     Point getRandomPoint();

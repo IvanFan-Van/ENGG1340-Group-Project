@@ -71,6 +71,11 @@ void Game::playerMove()
     displayBoardsSideBySide(playerBoard, computerBoard, true);
     // 获取用户输入
     string input;
+    // 解析用户输入
+    char row;
+    int col;
+    int x;
+    int y;
     while (true)
     {
         cout << "\nYour turn.\nEnter coordinates to fire: ";
@@ -80,17 +85,20 @@ void Game::playerMove()
         {
             cout << "Invalid input! Try again.\n";
         }
+        row = input[0];
+        col = input[1] - '0';
+        x = row - 'A';
+        y = col;
+        if (computerBoard.isHit(x, y))
+        {
+            cout << "You've already fired at this location! Try again.\n";
+        }
         else
         {
             break;
         }
     }
 
-    // 解析用户输入
-    char row = input[0];
-    int col = input[1] - '0';
-    int x = row - 'A';
-    int y = col;
     clearScreen();
     if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE)
     {

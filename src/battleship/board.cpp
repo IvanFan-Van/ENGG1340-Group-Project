@@ -176,6 +176,11 @@ bool Board::isOccupied(int x, int y)
     return board[x][y] != EMPTY;
 }
 
+bool Board::isHit(int x, int y)
+{
+    return hits[x][y];
+}
+
 void Board::displayRow(int row, bool showShips) const
 {
     for (int j = 0; j < BOARD_SIZE; ++j)
