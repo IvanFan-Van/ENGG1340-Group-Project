@@ -30,7 +30,7 @@ Board::Board(char board[BOARD_SIZE][BOARD_SIZE])
 
 void Board::display(bool showShips)
 {
-    cout << "  1 2 3 4 5 6 7 8 9 10\n";
+    cout << "  0 1 2 3 4 5 6 7 8 9\n";
     for (int i = 0; i < BOARD_SIZE; ++i)
     {
         cout << char('A' + i) << ' ';

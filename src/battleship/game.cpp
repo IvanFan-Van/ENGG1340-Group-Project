@@ -6,6 +6,7 @@
 #include <limits>
 #include <ios>
 #include <regex>
+#include <unistd.h>
 
 using namespace std;
 
@@ -29,16 +30,18 @@ void Game::placeShips(Board &board, bool isPlayer)
                 if (!regex_match(input, pattern)) // If the input does not match the pattern
                 {
                     cout << "Invalid input! Try again.\n";
+                    sleep(1);
+                    clearScreen();
                     continue;
                 }
 
                 // Parse the input
-                char col = input[0];
-                int row = input[1] - '0';
+                char row = input[0];
+                int col = input[1] - '0';
                 int orientation = input[3] - '0';
 
-                int x = col - 'A';
-                int y = row - 1;
+                int x = row - 'A';
+                int y = col;
                 if (board.isValidPlacement(x, y, shipSize, orientation == 1))
                 {
                     board.placeShip(x, y, shipSize, orientation == 1);
@@ -66,6 +69,7 @@ void Game::placeShips(Board &board, bool isPlayer)
 void Game::playerMove()
 {
     displayBoardsSideBySide(playerBoard, computerBoard, true);
+    // 获取用户输入
     string input;
     while (true)
     {
@@ -82,11 +86,12 @@ void Game::playerMove()
         }
     }
 
-    // Parse the input
-    char col = input[0];
-    int row = input[1] - '0';
-    int x = col - 'A';
-    int y = row - 1;
+    // 解析用户输入
+    char row = input[0];
+    int col = input[1] - '0';
+    int x = row - 'A';
+    int y = col;
+    clearScreen();
     if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE)
     {
         if (computerBoard.checkHit(x, y))
@@ -127,8 +132,10 @@ void Game::computerMove()
 Game::Game() : playerTurn(true)
 {
     srand(time(0));
+    clearScreen();
     placeShips(playerBoard, true);
     placeShips(computerBoard, false);
+    clearScreen();
 }
 
 Game::~Game()
