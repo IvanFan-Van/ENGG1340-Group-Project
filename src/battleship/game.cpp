@@ -2,6 +2,7 @@
 #include "battleship/constants.h"
 #include "battleship/utilities.h"
 #include "battleship/action.h"
+#include "battleship/color.h"
 #include <iostream>
 #include <limits>
 #include <ios>
@@ -14,45 +15,56 @@ void Game::placeShips(Board &board, bool isPlayer)
 {
     for (int shipSize : SHIPS)
     {
-        while (true)
+
+        if (isPlayer)
         {
-            if (isPlayer)
+            board.display(true);
+            cout << "Place ship of size " << shipSize << endl;
+            cout << "Enter coordinates (e.g., A1) and orientation (0 for horizontal, 1 for vertical): ";
+            string input;
+            getline(cin, input);
+
+            // Regular expression to match the input format
+            regex pattern("[A-J][0-9] [01]");
+
+            while (true)
             {
-                board.display(true);
-                cout << "Place ship of size " << shipSize << endl;
-                cout << "Enter coordinates (e.g., A1) and orientation (0 for horizontal, 1 for vertical): ";
-                string input;
-                getline(cin, input);
-
-                // Regular expression to match the input format
-                regex pattern("[A-J][0-9] [01]");
-
                 if (!regex_match(input, pattern)) // If the input does not match the pattern
                 {
-                    cout << "Invalid input! Try again.\n";
-                    sleep(1);
-                    clearScreen();
-                    continue;
-                }
-
-                // Parse the input
-                char row = input[0];
-                int col = input[1] - '0';
-                int orientation = input[3] - '0';
-
-                int x = row - 'A';
-                int y = col;
-                if (board.isValidPlacement(x, y, shipSize, orientation == 1))
-                {
-                    board.placeShip(x, y, shipSize, orientation == 1);
-                    break;
+                    cout << RED << "Invalid input! Try again.\n\n"
+                         << RESET_COLOR;
+                    cout << "Place ship of size " << shipSize << endl;
+                    cout << "Enter coordinates (e.g., A1) and orientation (0 for horizontal, 1 for vertical): ";
+                    getline(cin, input);
                 }
                 else
                 {
-                    cout << "Invalid placement! Try again.\n";
+                    break;
                 }
             }
+            clearScreen();
+
+            // Parse the input
+            char row = input[0];
+            int col = input[1] - '0';
+            int orientation = input[3] - '0';
+
+            int x = row - 'A';
+            int y = col;
+            if (board.isValidPlacement(x, y, shipSize, orientation == 1))
+            {
+                board.placeShip(x, y, shipSize, orientation == 1);
+                break;
+            }
             else
+            {
+                cout << RED << "Invalid placement! Try again.\n"
+                     << RESET_COLOR;
+            }
+        }
+        else
+        {
+            while (true)
             {
                 Point p = board.getRandomPoint();
                 bool isVertical = rand() % 2 == 0;
@@ -83,7 +95,9 @@ void Game::playerMove()
         regex pattern("[A-J][0-9]");
         if (!regex_match(input, pattern))
         {
-            cout << "Invalid input! Try again.\n";
+            cout << RED << "Invalid input! Try again.\n"
+                 << RESET_COLOR;
+            continue;
         }
         row = input[0];
         col = input[1] - '0';
@@ -91,7 +105,8 @@ void Game::playerMove()
         y = col;
         if (computerBoard.isHit(x, y))
         {
-            cout << "You've already fired at this location! Try again.\n";
+            cout << RED << "You've already fired at this location! Try again.\n"
+                 << RESET_COLOR;
         }
         else
         {
@@ -113,7 +128,8 @@ void Game::playerMove()
     }
     else
     {
-        cout << "Invalid coordinates!\n";
+        cout << RED << "Invalid coordinates!\n"
+             << RESET_COLOR;
     }
 }
 
