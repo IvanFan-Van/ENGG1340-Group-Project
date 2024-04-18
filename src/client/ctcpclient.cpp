@@ -146,8 +146,8 @@ bool CTcpClient::close()
   return true;
 }
 
-CTcpClient::CTcpClient() { socket_fd = -1; };
+CTcpClient::CTcpClient() { socket_fd = -1; }
 CTcpClient::~CTcpClient()
 {
   close();
-};
+}

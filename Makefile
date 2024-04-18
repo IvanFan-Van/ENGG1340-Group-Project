@@ -44,7 +44,7 @@ $(BUILD_DIR)/client: $(CLIENT_OBJECTS) $(filter-out $(BUILD_DIR)/battleship.o, $
 # 构建服务器
 server: $(BUILD_DIR)/server
 $(BUILD_DIR)/server: $(SERVER_OBJECTS) $(filter-out $(BUILD_DIR)/battleship.o, $(GAME_OBJECTS)) $(filter-out $(BUILD_DIR)/client.o, $(CLIENT_OBJECTS))
-	$(CXX) $(FLAGS) $^ -o $@
+	$(CXX) $(FLAGS) $^ -pthread -o $@
 
 # clean
 clean:
