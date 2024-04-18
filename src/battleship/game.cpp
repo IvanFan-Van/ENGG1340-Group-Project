@@ -3,6 +3,9 @@
 #include "battleship/utilities.h"
 #include "battleship/action.h"
 #include <iostream>
+#include <limits>
+#include <ios>
+#include <regex>
 
 using namespace std;
 
@@ -17,9 +20,23 @@ void Game::placeShips(Board &board, bool isPlayer)
                 board.display(true);
                 cout << "Place ship of size " << shipSize << endl;
                 cout << "Enter coordinates (e.g., A1) and orientation (0 for horizontal, 1 for vertical): ";
-                char col;
-                int row, orientation;
-                cin >> col >> row >> orientation;
+                string input;
+                getline(cin, input);
+
+                // Regular expression to match the input format
+                regex pattern("[A-J][0-9] [01]");
+
+                if (!regex_match(input, pattern)) // If the input does not match the pattern
+                {
+                    cout << "Invalid input! Try again.\n";
+                    continue;
+                }
+
+                // Parse the input
+                char col = input[0];
+                int row = input[1] - '0';
+                int orientation = input[3] - '0';
+
                 int x = col - 'A';
                 int y = row - 1;
                 if (board.isValidPlacement(x, y, shipSize, orientation == 1))
@@ -49,10 +66,25 @@ void Game::placeShips(Board &board, bool isPlayer)
 void Game::playerMove()
 {
     displayBoardsSideBySide(playerBoard, computerBoard, true);
-    cout << "\nYour turn.\nEnter coordinates to fire: ";
-    char col;
-    int row;
-    cin >> col >> row;
+    string input;
+    while (true)
+    {
+        cout << "\nYour turn.\nEnter coordinates to fire: ";
+        getline(cin, input);
+        regex pattern("[A-J][0-9]");
+        if (!regex_match(input, pattern))
+        {
+            cout << "Invalid input! Try again.\n";
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    // Parse the input
+    char col = input[0];
+    int row = input[1] - '0';
     int x = col - 'A';
     int y = row - 1;
     if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE)
@@ -105,26 +137,26 @@ Game::~Game()
 
 void Game::start()
 {
-        while (true)
+    while (true)
+    {
+        if (playerTurn)
         {
-            if (playerTurn)
+            playerMove();
+            if (computerBoard.allShipsSunk())
             {
-                playerMove();
-                if (computerBoard.allShipsSunk())
-                {
-                    cout << "Congratulations! You win!\n";
-                    break;
-                }
+                cout << "Congratulations! You win!\n";
+                break;
             }
-            else
-            {
-                computerMove();
-                if (playerBoard.allShipsSunk())
-                {
-                    cout << "Sorry, computer wins!\n";
-                    break;
-                }
-            }
-            playerTurn = !playerTurn;
         }
+        else
+        {
+            computerMove();
+            if (playerBoard.allShipsSunk())
+            {
+                cout << "Sorry, computer wins!\n";
+                break;
+            }
+        }
+        playerTurn = !playerTurn;
+    }
 }
