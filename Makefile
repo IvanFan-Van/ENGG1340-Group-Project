@@ -1,9 +1,13 @@
-TARGETS = hello
 CC = g++
-FLAGS = -pedentic-error -std=c++11
+FLAGS = -pedantic-errors -std=c++11
+
+template: ./build/game.o
+
+./build/game.o: ./src/battleship/game.cpp ./include/battleship/board.h ./include/battleship/constants.h ./include/battleship/utilities.h
+	$(CC) $(FLAGS) -I ./include -c $< -o $@
 
 ./build/board.o: ./src/battleship/board.cpp
-$(CC) $(FLAGS) -I ./include -c -o $@ $<
+	$(CC) $(FLAGS) -I ./include -c $< -o $@
 
 .PHONY: clean
 clean:

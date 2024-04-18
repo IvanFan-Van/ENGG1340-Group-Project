@@ -1,9 +1,11 @@
+#include <iostream>
 #include "battleship/board.h"
-
 #include "battleship/constants.h"
 #include "battleship/utilities.h"
-#include <iostream>
+
+
 using namespace std;
+
 class Game
 {
 private:
