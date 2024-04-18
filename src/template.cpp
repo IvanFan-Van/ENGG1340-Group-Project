@@ -36,7 +36,7 @@ public:
   /**
    * @brief Default constructor for the Board class.
    */
-  Board() {};
+  Board(){};
 
   /**
    * @brief Display the board.
@@ -45,7 +45,8 @@ public:
    *
    * @param showShips Whether to display ships on the board. For player, it is true; for opponent, it is false.
    */
-  void display(bool showShips){
+  void display(bool showShips)
+  {
     cout << "  1 2 3 4 5 6 7 8 9 10\n";
     for (int i = 0; i < BOARD_SIZE; i++)
     {
@@ -130,17 +131,18 @@ public:
    * @param size The size of the ship.
    * @param isVertical The orientation of the ship. If true, the ship is vertical. If false, the ship is horizontal.
    */
-  void placeShip(int x, int y, int size, bool isVertical){
+  void placeShip(int x, int y, int size, bool isVertical)
+  {
     if (isVertical)
     {
-      for (int i = x; i < x+size; i++)
+      for (int i = x; i < x + size; i++)
       {
         board[i][y] = SHIP;
       }
     }
     else
     {
-      for (int i = y; i < y+size; i++)
+      for (int i = y; i < y + size; i++)
       {
         board[x][i] = SHIP;
       }
@@ -157,7 +159,8 @@ public:
    * @return true If the position has been hit.
    * @return false If the position has not been hit.
    */
-  bool checkHit(int x, int y){
+  bool checkHit(int x, int y)
+  {
     if (hits[x][y])
     {
       return false;
@@ -195,7 +198,7 @@ public:
    * @return true If all ships have been sunk.
    * @return false If not all ships have been sunk.
    */
-  bool allShipsSunk() {return true;};
+  bool allShipsSunk() { return true; };
 
   /**
    * @brief Check if a position is occupied by a ship.
@@ -207,7 +210,8 @@ public:
    * @return true If the position is occupied by a ship.
    * @return false If the position is not occupied by a ship.
    */
-  bool isOccupied(int x, int y){
+  bool isOccupied(int x, int y)
+  {
     return board[x][y] != EMPTY;
   }
 
@@ -228,7 +232,8 @@ public:
    *
    * @return Point A random point on the board.
    */
-  Point getRandomPoint() {
+  Point getRandomPoint()
+  {
     return {0, 0};
   };
 };
