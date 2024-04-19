@@ -16,26 +16,7 @@ void ClientGame::init(Board &board)
 {
     for (int shipSize : SHIPS)
     {
-        while (true)
-        {
-            board.display(true);
-            cout << "Place ship of size " << shipSize << endl;
-            cout << "Enter coordinates (e.g., A1) and orientation (0 for horizontal, 1 for vertical): ";
-            char col;
-            int row, orientation;
-            cin >> col >> row >> orientation;
-            int x = col - 'A';
-            int y = row - 1;
-            if (board.isValidPlacement(x, y, shipSize, orientation == 1))
-            {
-                board.placeShip(x, y, shipSize, orientation == 1);
-                break;
-            }
-            else
-            {
-                cout << "Invalid placement! Try again.\n";
-            }
-        }
+        gameLogic.placeShips(board, shipSize);
     }
     board.display(true);
     // cout << "size of Action: " << sizeof(Action) << endl;
@@ -205,7 +186,8 @@ void ClientGame::checkStart()
         return;
     };
 
-    if (!client.recv(&gameStarted, sizeof(bool))) {
+    if (!client.recv(&gameStarted, sizeof(bool)))
+    {
         cout << "Failed to receive game start status from server\n";
         return;
     };

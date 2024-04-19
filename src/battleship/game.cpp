@@ -18,49 +18,7 @@ void Game::placeShips(Board &board, bool isPlayer)
 
         if (isPlayer)
         {
-            board.display(true);
-            cout << "Place ship of size " << shipSize << endl;
-            cout << "Enter coordinates (e.g., A1) and orientation (0 for horizontal, 1 for vertical): ";
-            string input;
-            getline(cin, input);
-
-            // Regular expression to match the input format
-            regex pattern("[A-J][0-9] [01]");
-
-            while (true)
-            {
-                if (!regex_match(input, pattern)) // If the input does not match the pattern
-                {
-                    cout << RED << "Invalid input! Try again.\n\n"
-                         << RESET_COLOR;
-                    cout << "Place ship of size " << shipSize << endl;
-                    cout << "Enter coordinates (e.g., A1) and orientation (0 for horizontal, 1 for vertical): ";
-                    getline(cin, input);
-                }
-                else
-                {
-                    break;
-                }
-            }
-            clearScreen();
-
-            // Parse the input
-            char row = input[0];
-            int col = input[1] - '0';
-            int orientation = input[3] - '0';
-
-            int x = row - 'A';
-            int y = col;
-            if (board.isValidPlacement(x, y, shipSize, orientation == 1))
-            {
-                board.placeShip(x, y, shipSize, orientation == 1);
-                break;
-            }
-            else
-            {
-                cout << RED << "Invalid placement! Try again.\n"
-                     << RESET_COLOR;
-            }
+            gameLogic.placeShips(board, shipSize);
         }
         else
         {

@@ -3,6 +3,7 @@
 
 #include "board.h"
 #include <string>
+#include "game_logic.h"
 
 using namespace std;
 
@@ -12,7 +13,7 @@ private:
   Board playerBoard;   // The board representing the player's ships and attacks.
   Board computerBoard; // The board representing the computer's ships and attacks.
   bool playerTurn;     // A flag indicating whether it is the player's turn.
-
+  GameLogic gameLogic; // An instance of the GameLogic class.
   /**
    * @brief Places the ships on the given board.
    *
