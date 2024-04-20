@@ -51,4 +51,39 @@ public:
       }
     }
   }
+
+  void getMoveFromPlayer(Board playerBoard, Board opponentBoard, int &x, int &y)
+  {
+    displayBoardsSideBySide(playerBoard, opponentBoard, true);
+    // 获取用户输入
+    string input;
+    // 解析用户输入
+    char row;
+    int col;
+    while (true)
+    {
+      cout << "\nYour turn.\nEnter coordinates to fire: ";
+      getline(cin, input);
+      regex pattern("[A-J][0-9]");
+      if (!regex_match(input, pattern))
+      {
+        cout << RED << "Invalid input! Try again.\n"
+             << RESET_COLOR;
+        continue;
+      }
+      row = input[0];
+      col = input[1] - '0';
+      x = row - 'A';
+      y = col;
+      if (opponentBoard.isHit(x, y))
+      {
+        cout << RED << "You've already fired at this location! Try again.\n"
+             << RESET_COLOR;
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
 };

@@ -18,6 +18,8 @@ void ClientGame::init(Board &board)
     {
         gameLogic.placeShips(board, shipSize);
     }
+
+    // 发送初始化棋盘行为
     board.display(true);
     // cout << "size of Action: " << sizeof(Action) << endl;
     // 初始化棋盘
@@ -73,19 +75,18 @@ void ClientGame::getGameStatus()
 void ClientGame::playerMove()
 {
     getGameStatus();
-    displayBoardsSideBySide(playerBoard, opponentBoard, true);
-    cout << "\nYour turn.\nEnter coordinates to fire: ";
-    char col;
-    int row;
-    cin >> col >> row;
-    int x = col - 'A';
-    int y = row - 1;
+
+    Action action;
+    action.type = SHOOT;
+    int x = -1;
+    int y = -1;
+    gameLogic.getMoveFromPlayer(playerBoard, opponentBoard, x, y);
+
+    action.shootData.x = x;
+    action.shootData.y = y;
+
     if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE)
     {
-        Action action;
-        action.type = SHOOT;
-        action.shootData.x = x;
-        action.shootData.y = y;
 
         if (!client.send(&action, sizeof(action)))
         {
