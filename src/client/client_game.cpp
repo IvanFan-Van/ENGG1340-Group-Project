@@ -197,7 +197,8 @@ void ClientGame::handleLost()
 {
     getGameStatus();
     displayBoardsSideBySide(playerBoard, opponentBoard, true);
-    cout << "You lost!\n";
+    cout << RED << "Sorry, You Lose\n"
+         << RESET_COLOR;
     stop();
 }
 
@@ -230,16 +231,13 @@ void ClientGame::handleMessage(const string &rawMessage)
     }
     else if (message == "You win")
     {
-        cout << "You win!\n";
+        cout << YELLOW << "Congratulations! You win!\n"
+             << RESET_COLOR;
         stop();
     }
     else if (message == "You lose")
     {
         handleLost();
-    }
-    else
-    {
-        cout << "else branch" << endl;
     }
 }
 
