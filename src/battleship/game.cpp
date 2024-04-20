@@ -38,40 +38,6 @@ void Game::placeShips(Board &board, bool isPlayer)
 
 void Game::playerMove()
 {
-    // displayBoardsSideBySide(playerBoard, computerBoard, true);
-    // // 获取用户输入
-    // string input;
-    // // 解析用户输入
-    // char row;
-    // int col;
-    // int x;
-    // int y;
-    // while (true)
-    // {
-    //     cout << "\nYour turn.\nEnter coordinates to fire: ";
-    //     getline(cin, input);
-    //     regex pattern("[A-J][0-9]");
-    //     if (!regex_match(input, pattern))
-    //     {
-    //         cout << RED << "Invalid input! Try again.\n"
-    //              << RESET_COLOR;
-    //         continue;
-    //     }
-    //     row = input[0];
-    //     col = input[1] - '0';
-    //     x = row - 'A';
-    //     y = col;
-    //     if (computerBoard.isHit(x, y))
-    //     {
-    //         cout << RED << "You've already fired at this location! Try again.\n"
-    //              << RESET_COLOR;
-    //     }
-    //     else
-    //     {
-    //         break;
-    //     }
-    // }
-
     int x = -1;
     int y = -1;
     gameLogic.getMoveFromPlayer(playerBoard, computerBoard, x, y);

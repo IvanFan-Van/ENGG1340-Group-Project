@@ -121,26 +121,6 @@ void ClientGame::playerMove()
     }
 }
 
-void ClientGame::computerMove()
-{
-    while (true)
-    {
-        Point p = playerBoard.getRandomPoint();
-        if (!playerBoard.isOccupied(p.x, p.y))
-        {
-            if (playerBoard.checkHit(p.x, p.y))
-            {
-                cout << "Computer's turn: Hit at " << char('A' + p.x) << p.y + 1 << endl;
-            }
-            else
-            {
-                cout << "Computer's turn: Miss at " << char('A' + p.x) << p.y + 1 << endl;
-            }
-            break;
-        }
-    }
-}
-
 ClientGame::ClientGame(CTcpClient &client) : gameStarted(false)
 {
     srand(time(0));
