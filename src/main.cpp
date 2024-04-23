@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
     cin >> choice;
   }
 
+  cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Add this line
   if (choice == 0)
   {
-    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Add this line
     Game battleshipGame = Game();
     battleshipGame.start();
   }

@@ -250,8 +250,8 @@ void ClientGame::start()
         cout << "connect failed\n";
         stop();
     };
-    // 获取匹配码
 
+    // 获取匹配码
     cout << "Enter Match Code: ";
     string buffer;
     getline(cin, buffer);
