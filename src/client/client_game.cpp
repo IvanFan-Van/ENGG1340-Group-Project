@@ -121,12 +121,14 @@ void ClientGame::playerMove()
     }
 }
 
-ClientGame::ClientGame(CTcpClient &client) : gameStarted(false)
+ClientGame::ClientGame(string &ip) : gameStarted(false)
 {
+    this->ip = ip;
     srand(time(0));
     this->playerBoard = Board();
     // 连接服务器
-    this->client = client;
+    // 创建客户端对象
+    this->client = CTcpClient();
 }
 
 ClientGame::~ClientGame()
@@ -243,6 +245,46 @@ void ClientGame::handleMessage(const string &rawMessage)
 
 void ClientGame::start()
 {
+    if (!client.connect(ip, 3004))
+    {
+        cout << "connect failed\n";
+        stop();
+    };
+    // 获取匹配码
+
+    cout << "Enter Match Code: ";
+    string buffer;
+    getline(cin, buffer);
+    if (!client.send(buffer))
+    {
+        cout << "send failed\n";
+        stop();
+    }
+
+    // 等待匹配成功
+    buffer.clear();
+    if (!client.recv(buffer, 1024))
+    {
+        cout << "recv failed\n";
+        stop();
+    }
+    cout << buffer << endl;
+
+    while (buffer != "Match Success")
+    {
+        buffer.clear();
+        if (!client.recv(buffer, 1024))
+        {
+            cout << "recv failed\n";
+            stop();
+        }
+
+        if (buffer == "Match Success")
+        {
+            break;
+        }
+    }
+
     init(playerBoard);
 
     // 等待游戏开始
