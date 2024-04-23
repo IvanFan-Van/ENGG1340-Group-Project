@@ -1,4 +1,6 @@
-#pragma once
+#ifndef BOARD_H
+#define BOARD_H
+
 #include "point.h"
 #include "constants.h"
 
@@ -21,3 +23,5 @@ public:
     bool allShipsPlaced();
     Point getRandomPoint();
 };
+
+#endif // BOARD_H

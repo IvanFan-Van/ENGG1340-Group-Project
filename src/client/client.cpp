@@ -1,5 +1,4 @@
 #include <iostream>
-#include "client/ctcpclient.h"
 #include "client/client_game.h"
 #include <signal.h>
 

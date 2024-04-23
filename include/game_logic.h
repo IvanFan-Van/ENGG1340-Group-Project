@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAME_LOGIC_H
+#define GAME_LOGIC_H
 
 #include <iostream>
 #include <regex>
@@ -87,3 +88,5 @@ public:
     }
   }
 };
+
+#endif // GAME_LOGIC_H

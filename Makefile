@@ -1,7 +1,7 @@
 # 编译器
 CXX = g++
 # 标志
-FLAGS = -pedantic-errors -std=c++11 -MMD -MP -Wall
+FLAGS = -pedantic-errors -std=c++17 -MMD -MP -Wall
 
 # 基本构建配置
 SRC_DIR = ./src
@@ -12,7 +12,7 @@ INCLUDE_DIR = ./include
 DEP_FILES = $(wildcard $(BUILD_DIR)/*.d)
 
 # 目标
-TARGETS = battleship client server
+TARGETS = battleship client server main
 
 .PHONY: all clean
 
@@ -45,6 +45,12 @@ $(BUILD_DIR)/client: $(CLIENT_OBJECTS) $(filter-out $(BUILD_DIR)/battleship.o, $
 server: $(BUILD_DIR)/server
 $(BUILD_DIR)/server: $(SERVER_OBJECTS) $(filter-out $(BUILD_DIR)/battleship.o, $(GAME_OBJECTS)) $(filter-out $(BUILD_DIR)/client.o, $(CLIENT_OBJECTS))
 	$(CXX) $(FLAGS) $^ -pthread -o $@
+
+# 构建main
+main: $(BUILD_DIR)/main
+
+$(BUILD_DIR)/main: ./src/main.cpp $(filter-out $(BUILD_DIR)/battleship.o, $(GAME_OBJECTS)) $(filter-out $(BUILD_DIR)/client.o, $(CLIENT_OBJECTS))
+	$(CXX) $(FLAGS) -I ./include $^ -pthread -o $@
 
 # clean
 clean:
