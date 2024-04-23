@@ -6,9 +6,34 @@
 #include <limits>
 #include <sstream>
 #include <string>
+#include <termios.h>
 #include <thread>
+#include <unistd.h>
+
+#define KEY_UP 65
+#define KEY_DOWN 66
+#define ENTER_KEY 10
 
 using namespace std;
+
+struct termios orig_termios;
+
+/**
+ * @brief 禁用标准输入的缓冲区
+ */
+void enableRawMode() {
+  tcgetattr(STDIN_FILENO, &orig_termios);
+  struct termios raw = orig_termios;
+  raw.c_lflag &= ~(ECHO | ICANON);
+  tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+}
+
+/**
+ * @brief 恢复标准输入的缓冲区
+ */
+
+void disableRawMode() { tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios); }
+
 /**
  * @brief 打印进度条
  */
@@ -72,12 +97,11 @@ void displayLogo() {
     printProgressBar(col, max_length);
 
     // Delay for demonstration purposes.
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(25));
 
     // Move the cursor back to the top.
     std::cout << "\033[" << lines.size() << "A";
   }
-
   // After the final iteration, move the cursor below the art and progress bar
   std::cout << "\033[" << lines.size() + 1 << "B" << std::endl;
 }
@@ -85,33 +109,72 @@ void displayLogo() {
 /**
  * @brief 显示游戏菜单
  */
-void displayMenu() {
-  displayLogo();
-  cout << YELLOW << "Welcome to BattleShip Game!" << RESET_COLOR << endl;
+void displayMenu(bool isComputerSelected) {
+  cout << "Select Game Mode:\n";
+  cout << (isComputerSelected ? string(YELLOW) + "=> Computer <=" + RESET_COLOR
+                              : "  Computer  ")
+       << endl;
+  cout << (!isComputerSelected ? string(YELLOW) + "=> Online <=" + RESET_COLOR
+                               : "  Online  ")
+       << endl;
 
-  cout << "> Computer" << endl;
-  cout << "> Online" << endl;
-  cout << "Enter your choice: ";
+  cout << "(Using the arrow keys to navigate, press Enter to select)\n";
+  cout.flush();
+}
+
+/**
+ * @brief 清除屏幕上方的行数
+ */
+void clearLinesAbove(int numLines) {
+  for (int i = 0; i < numLines; ++i) {
+    // Move the cursor up
+    std::cout << "\033[A";
+    // Erase the line
+    std::cout << "\033[K";
+  }
 }
 
 int main(int argc, char *argv[]) {
-  displayMenu();
+  enableRawMode(); // Disable standard input buffering
 
-  string choice;
-  cin >> choice;
-  while (choice != "0" && choice != "1") {
-    cout << "Wrong Input, Please Enter 0 or 1..." << endl;
-    cout << "Enter your choice: ";
-    cin >> choice;
+  displayLogo();
+  this_thread::sleep_for(
+      chrono::milliseconds(500)); // Delay for demonstration purposes
+
+  bool isComputerSelected = true;
+  displayMenu(isComputerSelected);
+
+  while (true) {
+    char c;
+    if (read(STDIN_FILENO, &c, 1) == -1) {
+      perror("read");
+      exit(1);
+    }
+
+    if (c == '\033') { // Arrow keys are preceded by an escape sequence \033[
+      read(STDIN_FILENO, &c, 1); // Skip the [
+      read(STDIN_FILENO, &c, 1);
+      if (c == KEY_UP || c == KEY_DOWN) {
+        isComputerSelected = !isComputerSelected; // Toggle the selection
+      }
+    } else if (c == ENTER_KEY) {
+      break;
+    }
+    clearLinesAbove(4);
+    displayMenu(isComputerSelected);
   }
 
-  cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Add this line
-  if (choice == "0") {
+  disableRawMode(); // Restore terminal settings
+
+  if (isComputerSelected) {
+    cout << "Starting Game With Computer...\n";
+    sleep(1); // Delay for demonstration purposes
     Game battleshipGame = Game();
     battleshipGame.start();
-  } else if (choice == "1") {
+  } else {
+    cout << "Starting Online Game...\n";
+    sleep(1); // Delay for demonstration purposes
     string DEFAULT_IP = "43.143.114.119";
-
     // 匹配成功
     ClientGame battleshipGame = ClientGame(DEFAULT_IP);
     battleshipGame.start();
