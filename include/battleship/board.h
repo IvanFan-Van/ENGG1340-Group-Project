@@ -20,4 +20,6 @@ public:
     void displayRow(int row, bool showShips) const;
     bool allShipsPlaced();
     Point getRandomPoint();
+    bool withinBoard(int x, int y, int size, bool isVertical);
+    void DisplayColorPlacement(int x, int y, int size, bool isVertical);
 };
