@@ -74,19 +74,19 @@ void displayMenu() {
 int main(int argc, char *argv[]) {
   displayMenu();
 
-  int choice;
+  string choice;
   cin >> choice;
-  while (choice != 0 && choice != 1) {
+  while (choice != "0" && choice != "1") {
     cout << "Wrong Input, Please Enter 0 or 1..." << endl;
     cout << "Enter your choice: ";
     cin >> choice;
   }
 
   cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Add this line
-  if (choice == 0) {
+  if (choice == "0") {
     Game battleshipGame = Game();
     battleshipGame.start();
-  } else if (choice == 1) {
+  } else if (choice == "1") {
     string DEFAULT_IP = "43.143.114.119";
 
     // 匹配成功
