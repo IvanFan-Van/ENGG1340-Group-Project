@@ -16,27 +16,10 @@ void ClientGame::init(Board &board)
 {
     for (int shipSize : SHIPS)
     {
-        while (true)
-        {
-            board.display(true);
-            cout << "Place ship of size " << shipSize << endl;
-            cout << "Enter coordinates (e.g., A1) and orientation (0 for horizontal, 1 for vertical): ";
-            char col;
-            int row, orientation;
-            cin >> col >> row >> orientation;
-            int x = col - 'A';
-            int y = row - 1;
-            if (board.isValidPlacement(x, y, shipSize, orientation == 1))
-            {
-                board.placeShip(x, y, shipSize, orientation == 1);
-                break;
-            }
-            else
-            {
-                cout << "Invalid placement! Try again.\n";
-            }
-        }
+        gameLogic.placeShips(board, shipSize);
     }
+
+    // 发送初始化棋盘行为
     board.display(true);
     // cout << "size of Action: " << sizeof(Action) << endl;
     // 初始化棋盘
@@ -92,19 +75,18 @@ void ClientGame::getGameStatus()
 void ClientGame::playerMove()
 {
     getGameStatus();
-    displayBoardsSideBySide(playerBoard, opponentBoard, true);
-    cout << "\nYour turn.\nEnter coordinates to fire: ";
-    char col;
-    int row;
-    cin >> col >> row;
-    int x = col - 'A';
-    int y = row - 1;
+
+    Action action;
+    action.type = SHOOT;
+    int x = -1;
+    int y = -1;
+    gameLogic.getMoveFromPlayer(playerBoard, opponentBoard, x, y);
+
+    action.shootData.x = x;
+    action.shootData.y = y;
+
     if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE)
     {
-        Action action;
-        action.type = SHOOT;
-        action.shootData.x = x;
-        action.shootData.y = y;
 
         if (!client.send(&action, sizeof(action)))
         {
@@ -136,26 +118,6 @@ void ClientGame::playerMove()
     else
     {
         cout << "Invalid coordinates!\n";
-    }
-}
-
-void ClientGame::computerMove()
-{
-    while (true)
-    {
-        Point p = playerBoard.getRandomPoint();
-        if (!playerBoard.isOccupied(p.x, p.y))
-        {
-            if (playerBoard.checkHit(p.x, p.y))
-            {
-                cout << "Computer's turn: Hit at " << char('A' + p.x) << p.y + 1 << endl;
-            }
-            else
-            {
-                cout << "Computer's turn: Miss at " << char('A' + p.x) << p.y + 1 << endl;
-            }
-            break;
-        }
     }
 }
 
@@ -205,7 +167,8 @@ void ClientGame::checkStart()
         return;
     };
 
-    if (!client.recv(&gameStarted, sizeof(bool))) {
+    if (!client.recv(&gameStarted, sizeof(bool)))
+    {
         cout << "Failed to receive game start status from server\n";
         return;
     };
@@ -234,7 +197,8 @@ void ClientGame::handleLost()
 {
     getGameStatus();
     displayBoardsSideBySide(playerBoard, opponentBoard, true);
-    cout << "You lost!\n";
+    cout << RED << "Sorry, You Lose\n"
+         << RESET_COLOR;
     stop();
 }
 
@@ -267,16 +231,13 @@ void ClientGame::handleMessage(const string &rawMessage)
     }
     else if (message == "You win")
     {
-        cout << "You win!\n";
+        cout << YELLOW << "Congratulations! You win!\n"
+             << RESET_COLOR;
         stop();
     }
     else if (message == "You lose")
     {
         handleLost();
-    }
-    else
-    {
-        cout << "else branch" << endl;
     }
 }
 

@@ -18,49 +18,7 @@ void Game::placeShips(Board &board, bool isPlayer)
 
         if (isPlayer)
         {
-            board.display(true);
-            cout << "Place ship of size " << shipSize << endl;
-            cout << "Enter coordinates (e.g., A1) and orientation (0 for horizontal, 1 for vertical): ";
-            string input;
-            getline(cin, input);
-
-            // Regular expression to match the input format
-            regex pattern("[A-J][0-9] [01]");
-
-            while (true)
-            {
-                if (!regex_match(input, pattern)) // If the input does not match the pattern
-                {
-                    cout << RED << "Invalid input! Try again.\n\n"
-                         << RESET_COLOR;
-                    cout << "Place ship of size " << shipSize << endl;
-                    cout << "Enter coordinates (e.g., A1) and orientation (0 for horizontal, 1 for vertical): ";
-                    getline(cin, input);
-                }
-                else
-                {
-                    break;
-                }
-            }
-            clearScreen();
-
-            // Parse the input
-            char row = input[0];
-            int col = input[1] - '0';
-            int orientation = input[3] - '0';
-
-            int x = row - 'A';
-            int y = col;
-            if (board.isValidPlacement(x, y, shipSize, orientation == 1))
-            {
-                board.placeShip(x, y, shipSize, orientation == 1);
-                break;
-            }
-            else
-            {
-                cout << RED << "Invalid placement! Try again.\n"
-                     << RESET_COLOR;
-            }
+            gameLogic.placeShips(board, shipSize);
         }
         else
         {
@@ -80,41 +38,10 @@ void Game::placeShips(Board &board, bool isPlayer)
 
 void Game::playerMove()
 {
-    displayBoardsSideBySide(playerBoard, computerBoard, true);
-    // 获取用户输入
-    string input;
-    // 解析用户输入
-    char row;
-    int col;
-    int x;
-    int y;
-    while (true)
-    {
-        cout << "\nYour turn.\nEnter coordinates to fire: ";
-        getline(cin, input);
-        regex pattern("[A-J][0-9]");
-        if (!regex_match(input, pattern))
-        {
-            cout << RED << "Invalid input! Try again.\n"
-                 << RESET_COLOR;
-            continue;
-        }
-        row = input[0];
-        col = input[1] - '0';
-        x = row - 'A';
-        y = col;
-        if (computerBoard.isHit(x, y))
-        {
-            cout << RED << "You've already fired at this location! Try again.\n"
-                 << RESET_COLOR;
-        }
-        else
-        {
-            break;
-        }
-    }
+    int x = -1;
+    int y = -1;
+    gameLogic.getMoveFromPlayer(playerBoard, computerBoard, x, y);
 
-    clearScreen();
     if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE)
     {
         if (computerBoard.checkHit(x, y))
@@ -175,7 +102,9 @@ void Game::start()
             playerMove();
             if (computerBoard.allShipsSunk())
             {
-                cout << "Congratulations! You win!\n";
+                displayBoardsSideBySide(playerBoard, computerBoard, true);
+                cout << YELLOW << "Congratulations! You win!\n"
+                     << RESET_COLOR;
                 break;
             }
         }
@@ -184,7 +113,8 @@ void Game::start()
             computerMove();
             if (playerBoard.allShipsSunk())
             {
-                cout << "Sorry, computer wins!\n";
+                cout << RED << "Sorry, computer wins!\n"
+                     << RESET_COLOR;
                 break;
             }
         }

@@ -3,6 +3,7 @@
 
 #include "battleship/board.h"
 #include "client/ctcpclient.h"
+#include "game_logic.h"
 #include <string>
 #include <unordered_map>
 
@@ -15,7 +16,7 @@ private:
   Board playerBoard;   // The board representing the player's ships and attacks.
   Board opponentBoard; // Only the hits from the opponent
   bool gameStarted;    // A flag indicating whether the game has started.
-
+  GameLogic gameLogic; // An instance of the GameLogic class.
   /**
    * @brief Places the ships on the given board.
    *
