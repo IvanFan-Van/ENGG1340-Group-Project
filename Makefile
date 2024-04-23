@@ -1,7 +1,7 @@
 # 编译器
 CXX = g++
 # 标志
-FLAGS = -pedantic-errors -std=c++17 -MMD -MP -Wall
+FLAGS = -pedantic-errors -std=c++17 -static -MMD -MP -Wall
 
 # 基本构建配置
 SRC_DIR = ./src

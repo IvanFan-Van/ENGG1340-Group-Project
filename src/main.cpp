@@ -9,7 +9,34 @@
 #include <thread>
 
 using namespace std;
+/**
+ * @brief 打印进度条
+ */
+void printProgressBar(size_t current, size_t total) {
+  // 进度条的宽度
+  int barWidth = 70;
 
+  // 计算进度百分比
+  float progress = static_cast<float>(current) / total;
+
+  cout << "\r\033[K"; // 清空当前行
+
+  std::cout << "[";
+  int pos = static_cast<int>(barWidth * progress);
+  for (int i = 0; i < barWidth; ++i) {
+    if (i < pos)
+      std::cout << "=";
+    else if (i == pos)
+      std::cout << ">";
+    else
+      std::cout << " ";
+  }
+  std::cout << "] " << int(progress * 100.0) << " %" << std::flush;
+}
+
+/**
+ * @brief 显示游戏的Logo
+ */
 void displayLogo() {
   const string art = R"(
       ____  ___  ______________    ___________ __  __________ 
@@ -21,10 +48,10 @@ void displayLogo() {
       )";
 
   // Split the art into lines
-  istringstream iss(art);
-  vector<string> lines;
-  string line;
-  while (getline(iss, line)) {
+  std::istringstream iss(art);
+  std::vector<std::string> lines;
+  std::string line;
+  while (std::getline(iss, line)) {
     lines.push_back(line);
   }
 
@@ -36,32 +63,28 @@ void displayLogo() {
     }
   }
 
-  // Loop through each column of characters
-  for (size_t col = 0; col < max_length; ++col) {
-    // Loop through each line
+  for (size_t col = 0; col <= max_length; ++col) {
     for (const auto &line : lines) {
-      // Print the substring that starts at index 0 and has length of col + 1
-      // characters
-      if (col < line.size()) {
-        std::cout << line.substr(0, col + 1);
-      }
-      // Fill the rest of the line with spaces if needed
-      else {
-        std::cout << line;
-      }
-      // Move to the next line
-      std::cout << std::endl;
+      std::cout << line.substr(0, col) << std::endl;
     }
-    // Wait for 50ms
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    // Move the cursor back to the beginning of the lines
+
+    // Print the progress bar at the bottom.
+    printProgressBar(col, max_length);
+
+    // Delay for demonstration purposes.
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    // Move the cursor back to the top.
     std::cout << "\033[" << lines.size() << "A";
   }
 
-  // After the final iteration, move the cursor below the art
-  std::cout << "\033[" << lines.size() << "B";
+  // After the final iteration, move the cursor below the art and progress bar
+  std::cout << "\033[" << lines.size() + 1 << "B" << std::endl;
 }
 
+/**
+ * @brief 显示游戏菜单
+ */
 void displayMenu() {
   displayLogo();
   cout << YELLOW << "Welcome to BattleShip Game!" << RESET_COLOR << endl;
