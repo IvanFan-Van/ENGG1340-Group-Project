@@ -1,7 +1,11 @@
 #ifndef BATTLESHIP_UTILITIES_H
 #define BATTLESHIP_UTILITIES_H
 
-void displayBoardsSideBySide(const Board &playerBoard, const Board &computerBoard, bool showPlayerShips);
+#include "battleship/board.h"
+
+void displayBoardsSideBySide(const Board &playerBoard,
+                             const Board &opponentBoard, bool showPlayerShips,
+                             bool showOpponentShips = false);
 
 void clearScreen();
 

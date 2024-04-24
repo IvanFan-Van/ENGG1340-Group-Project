@@ -16,6 +16,7 @@ private:
   Board playerBoard;   // The board representing the player's ships and attacks.
   Board opponentBoard; // Only the hits from the opponent
   bool gameStarted;    // A flag indicating whether the game has started.
+  string ip;
   GameLogic gameLogic; // An instance of the GameLogic class.
   /**
    * @brief Places the ships on the given board.
@@ -57,7 +58,7 @@ public:
    */
   ClientGame();
 
-  ClientGame(CTcpClient &client);
+  ClientGame(string &ip);
 
   ~ClientGame();
 
