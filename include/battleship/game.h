@@ -23,7 +23,6 @@ private:
    * @param isPlayer A flag indicating whether the board belongs to the player.
    */
   void placeShips(Board &board, bool isPlayer);
-  void keyplaceShips(Board &board, bool isPlayer);
 
   /**
    * @brief Executes the player's move.

@@ -1,6 +1,4 @@
-#ifndef BOARD_H
-#define BOARD_H
-
+#pragma once
 #include "point.h"
 #include "constants.h"
 
@@ -22,12 +20,5 @@ public:
     void displayRow(int row, bool showShips) const;
     bool allShipsPlaced();
     Point getRandomPoint();
-<<<<<<< HEAD
-    bool withinBoard(int x, int y, int size, bool isVertical);
     void DisplayColorPlacement(int x, int y, int size, bool isVertical);
 };
-=======
-};
-
-#endif // BOARD_H
->>>>>>> 762b011dd58d0ab413fa75f86e812da697a7aeea
