@@ -161,7 +161,7 @@
 //     }
 // }
 
-// bool Board::checkHit(int x, int y)
+// bool Board::handleHit(int x, int y)
 // {
 //     if (hits[x][y])
 //     {

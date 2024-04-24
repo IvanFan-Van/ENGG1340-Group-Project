@@ -168,7 +168,7 @@ void ServerGame::handleShootAction(const Action &action, int client_fd) {
   int y = action.shootData.y;
   int opponent_fd = client_fd == player1 ? player2 : player1;
   Board &opponentBoard = boards[opponent_fd];
-  bool hit = opponentBoard.checkHit(x, y);
+  bool hit = opponentBoard.handleHit(x, y);
   if (send(client_fd, &hit, sizeof(bool), 0) == -1) {
     cout << "Failed to send hit status to client " << client_fd << endl;
   };
