@@ -67,12 +67,12 @@ void Game::playerMove() {
 void Game::computerMove() {
   while (true) {
     Point p = playerBoard.getRandomPoint();
-    if (!playerBoard.isOccupied(p.x, p.y)) {
-      if (playerBoard.checkHit(p.x, p.y)) {
-        cout << "Computer's turn: Hit at " << char('A' + p.x) << p.y + 1
+    if (!playerBoard.checkHit(p.x, p.y)) {
+      if (!playerBoard.isOccupied(p.x, p.y)) {
+        cout << "Computer's turn: Hit at " << char('A' + p.x) << p.y
              << endl;
       } else {
-        cout << "Computer's turn: Miss at " << char('A' + p.x) << p.y + 1
+        cout << "Computer's turn: Miss at " << char('A' + p.x) << p.y
              << endl;
       }
       break;

@@ -79,5 +79,5 @@ char keyboard(){
 		
 	}
 	tcsetattr(0,TCSANOW, &stored_settings);//recover the original setting for input and display mode
-	return key;//return the character key, which can only be among {E,N,w,a,s,d}
+	return key;//return the character key, which can only be among {Y,N,w,a,s,d}
 }
