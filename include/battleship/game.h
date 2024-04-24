@@ -2,22 +2,23 @@
 #define BATTLESHIP_GAME_H
 
 #include "board.h"
+#include "common/game_logic.h"
 #include <string>
-#include "game_logic.h"
 
 using namespace std;
 
-class Game
-{
+class Game {
 private:
-  Board playerBoard;   // The board representing the player's ships and attacks.
-  Board computerBoard; // The board representing the computer's ships and attacks.
-  bool playerTurn;     // A flag indicating whether it is the player's turn.
+  Board playerBoard; // The board representing the player's ships and attacks.
+  Board
+      computerBoard; // The board representing the computer's ships and attacks.
+  bool playerTurn;   // A flag indicating whether it is the player's turn.
   GameLogic gameLogic; // An instance of the GameLogic class.
   /**
    * @brief Places the ships on the given board.
    *
-   * This function is used to place the ships on the board for either the player or the computer.
+   * This function is used to place the ships on the board for either the player
+   * or the computer.
    *
    * @param board The board on which to place the ships.
    * @param isPlayer A flag indicating whether the board belongs to the player.
@@ -49,7 +50,8 @@ public:
   /**
    * @brief Starts the game.
    *
-   * This function starts the game by initializing the boards, placing the ships, and executing the turns until the game is over.
+   * This function starts the game by initializing the boards, placing the
+   * ships, and executing the turns until the game is over.
    */
   void start();
 };

@@ -1,4 +1,5 @@
-#include "battleship/color.h"
+#ifndef COLOR_H
+#define COLOR_H
 #include <string>
 
 const std::string BLACK = "\033[0;30m";
@@ -8,3 +9,4 @@ const std::string YELLOW = "\033[0;33m";
 const std::string BLUE = "\033[0;34m";
 const std::string GREY = "\033[0;37m";
 const std::string RESET_COLOR = "\033[0m";
+#endif // COLOR_H

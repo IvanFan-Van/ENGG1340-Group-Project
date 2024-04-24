@@ -1,9 +1,9 @@
 #include "battleship/game.h"
 #include "battleship/action.h"
-#include "battleship/color.h"
 #include "battleship/keyboard.h"
-#include "battleship/constants.h"
 #include "battleship/utilities.h"
+#include "common/color.h"
+#include "common/constants.h"
 #include <ios>
 #include <iostream>
 #include <limits>
@@ -30,36 +30,28 @@ using namespace std;
 //   }
 // }
 
-void Game::placeShips(Board &board, bool isPlayer)
-{
-    for (int shipSize : SHIPS)
-    {
+void Game::placeShips(Board &board, bool isPlayer) {
+  for (int shipSize : SHIPS) {
 
-        if (isPlayer)
-        {
-            gameLogic.placeShips(board, shipSize);
+    if (isPlayer) {
+      gameLogic.placeShips(board, shipSize);
+    } else {
+      while (true) {
+        Point p = board.getRandomPoint();
+        bool isVertical = rand() % 2 == 0;
+        if (board.isValidPlacement(p.x, p.y, shipSize, isVertical)) {
+          board.placeShip(p.x, p.y, shipSize, isVertical);
+          break;
         }
-        else
-        {
-            while (true)
-            {
-                Point p = board.getRandomPoint();
-                bool isVertical = rand() % 2 == 0;
-                if (board.isValidPlacement(p.x, p.y, shipSize, isVertical))
-                {
-                    board.placeShip(p.x, p.y, shipSize, isVertical);
-                    break;
-                }
-            }
-        }
+      }
     }
+  }
 }
 
-void Game::playerMove()
-{
-    int x = -1;
-    int y = -1;
-    gameLogic.getMoveFromPlayer(playerBoard, computerBoard, x, y);
+void Game::playerMove() {
+  int x = -1;
+  int y = -1;
+  gameLogic.getMoveFromPlayer(playerBoard, computerBoard, x, y);
 
   if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
     if (computerBoard.checkHit(x, y)) {

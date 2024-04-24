@@ -1,6 +1,6 @@
-#include "battleship/color.h"
 #include "battleship/game.h"
 #include "client/client_game.h"
+#include "common/color.h"
 #include <chrono>
 #include <iostream>
 #include <limits>

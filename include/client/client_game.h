@@ -3,14 +3,13 @@
 
 #include "battleship/board.h"
 #include "client/ctcpclient.h"
-#include "game_logic.h"
+#include "common/game_logic.h"
 #include <string>
 #include <unordered_map>
 
 using namespace std;
 
-class ClientGame
-{
+class ClientGame {
 private:
   CTcpClient client;   // The client object used to communicate with the server.
   Board playerBoard;   // The board representing the player's ships and attacks.
@@ -21,7 +20,8 @@ private:
   /**
    * @brief Places the ships on the given board.
    *
-   * This function is used to place the ships on the board for either the player or the computer.
+   * This function is used to place the ships on the board for either the player
+   * or the computer.
    *
    * @param board The board on which to place the ships.
    */
@@ -65,7 +65,8 @@ public:
   /**
    * @brief Starts the game.
    *
-   * This function starts the game by initializing the boards, placing the ships, and executing the turns until the game is over.
+   * This function starts the game by initializing the boards, placing the
+   * ships, and executing the turns until the game is over.
    */
   void start();
 

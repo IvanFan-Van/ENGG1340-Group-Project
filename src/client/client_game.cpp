@@ -1,9 +1,9 @@
 #include "client/client_game.h"
 #include "battleship/action.h"
-#include "battleship/constants.h"
 #include "battleship/game.h"
 #include "battleship/utilities.h"
 #include "client/ctcpclient.h"
+#include "common/constants.h"
 #include <algorithm>
 #include <iostream>
 #include <regex>
