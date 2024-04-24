@@ -25,6 +25,8 @@ CLIENT_OBJECTS = $(patsubst $(SRC_DIR)/client/%.cpp, $(BUILD_DIR)/%.o, $(wildcar
 # 海战棋服务器
 SERVER_OBJECTS = $(patsubst $(SRC_DIR)/server/%.cpp, $(BUILD_DIR)/%.o,$(wildcard $(SRC_DIR)/server/*.cpp))
 
+COMMON_OBJECTS = $(patsubst $(SRC_DIR)/common/%.cpp, $(BUILD_DIR)/%.o, $(wildcard $(SRC_DIR)/common/*.cpp))
+
 # 包含所有依赖文件
 -include $(DEP_FILES)
 
@@ -35,12 +37,12 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/**/%.cpp
 # 构建main
 main: $(BUILD_DIR)/main
 
-$(BUILD_DIR)/main: ./src/main.cpp $(GAME_OBJECTS) $(CLIENT_OBJECTS)
+$(BUILD_DIR)/main: ./src/main.cpp $(GAME_OBJECTS) $(CLIENT_OBJECTS) $(COMMON_OBJECTS)
 	$(CXX) $(FLAGS) -I ./include $^ -pthread -o $@
 
 server: $(BUILD_DIR)/server
 
-$(BUILD_DIR)/server: $(SERVER_OBJECTS) $(GAME_OBJECTS)
+$(BUILD_DIR)/server: $(SERVER_OBJECTS) $(GAME_OBJECTS) $(COMMON_OBJECTS)
 	$(CXX) $(FLAGS) -I ./include $^ -pthread -o $@
 # clean
 clean:
