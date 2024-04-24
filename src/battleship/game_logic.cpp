@@ -61,13 +61,13 @@ void GameLogic::placeShips(Board &board, int shipSize) {
       }
       break;
     case 's':
-      if (i < BOARD_SIZE - shipSize) {
+      if (i < BOARD_SIZE - (isVertical ? shipSize : 1)) {
         i += 1;
         board.DisplayColorPlacement(i, j, shipSize, isVertical);
       }
       break;
     case 'd':
-      if (j < BOARD_SIZE - shipSize) {
+      if (j < BOARD_SIZE - (isVertical ? 1 : shipSize)) {
         j += 1;
         board.DisplayColorPlacement(i, j, shipSize, isVertical);
       }
