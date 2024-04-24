@@ -39,7 +39,8 @@ using namespace std;
 //   }
 // }
 
-void GameLogic::placeShips(Board &board, int shipSize) {
+void GameLogic::placeShips(Board &board, Ship &ship) {
+  int shipSize = ship.size;
   char key;
   bool placed = false;
   int i = STARTPOINT, j = STARTPOINT;

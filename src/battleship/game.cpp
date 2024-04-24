@@ -32,9 +32,9 @@ using namespace std;
 
 void Game::placeShips(Board &board, bool isPlayer) {
   for (int shipSize : SHIPS) {
-
+    Ship ship(shipSize);
     if (isPlayer) {
-      gameLogic.placeShips(board, shipSize);
+      gameLogic.placeShips(board, ship);
     } else {
       while (true) {
         Point p = board.getRandomPoint();

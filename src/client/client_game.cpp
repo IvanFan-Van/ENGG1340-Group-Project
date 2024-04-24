@@ -13,7 +13,8 @@ using namespace std;
 
 void ClientGame::init(Board &board) {
   for (int shipSize : SHIPS) {
-    gameLogic.placeShips(board, shipSize);
+    Ship ship(shipSize);
+    gameLogic.placeShips(board, ship);
   }
 
   // 发送初始化棋盘行为
