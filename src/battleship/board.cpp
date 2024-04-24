@@ -95,7 +95,7 @@ void Board::placeShip(int x, int y, int size, bool isVertical) {
   }
 }
 
-bool Board::checkHit(int x, int y) {
+bool Board::handleHit(int x, int y) {
   if (hits[x][y]) {
     // If the position was already hit before, we don't need to change anything
     // Consider providing feedback that the position was already targeted.

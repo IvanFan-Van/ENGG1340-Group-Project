@@ -54,7 +54,7 @@ void Game::playerMove() {
   gameLogic.getMoveFromPlayer(playerBoard, computerBoard, x, y);
 
   if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
-    if (computerBoard.checkHit(x, y)) {
+    if (computerBoard.handleHit(x, y)) {
       cout << "Hit!\n";
     } else {
       cout << "Miss!\n";
@@ -68,7 +68,7 @@ void Game::computerMove() {
   while (true) {
     Point p = playerBoard.getRandomPoint();
     if (!playerBoard.isOccupied(p.x, p.y)) {
-      if (playerBoard.checkHit(p.x, p.y)) {
+      if (playerBoard.handleHit(p.x, p.y)) {
         cout << "Computer's turn: Hit at " << char('A' + p.x) << p.y + 1
              << endl;
       } else {
