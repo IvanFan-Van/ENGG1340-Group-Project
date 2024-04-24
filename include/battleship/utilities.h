@@ -3,7 +3,9 @@
 
 #include "battleship/board.h"
 
-void displayBoardsSideBySide(const Board &playerBoard, const Board &computerBoard, bool showPlayerShips);
+void displayBoardsSideBySide(const Board &playerBoard,
+                             const Board &opponentBoard, bool showPlayerShips,
+                             bool showOpponentShips = false);
 
 void clearScreen();
 
