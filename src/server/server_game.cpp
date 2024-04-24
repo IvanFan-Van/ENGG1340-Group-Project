@@ -1,8 +1,8 @@
 #include "server/server_game.h"
 #include "battleship/action.h"
-#include "battleship/utilities.h"
 #include "client/ctcpclient.h"
 #include "common/constants.h"
+#include "common/utilities.h"
 #include <iostream>
 #include <stdlib.h>
 #include <sys/socket.h>

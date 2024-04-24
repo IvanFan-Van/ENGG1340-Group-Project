@@ -1,6 +1,6 @@
 // #include "battleship/game.h"
 // #include "battleship/constants.h"
-// #include "battleship/utilities.h"
+// #include "common/utilities.h"
 // #include "battleship/action.h"
 // #include "battleship/color.h"
 // #include "battleship/keyboard.h"
@@ -27,31 +27,36 @@
 //                 case 'w':
 //                     if (i > 0){
 //                         i -= 1;
-//                         board.DisplayColorPlacement(i, j, shipSize, isVertical);
+//                         board.DisplayColorPlacement(i, j, shipSize,
+//                         isVertical);
 //                     }
 //                     break;
 //                 case 'a':
 //                     if (j > 0){
 //                         j -= 1;
-//                         board.DisplayColorPlacement(i, j, shipSize, isVertical);
+//                         board.DisplayColorPlacement(i, j, shipSize,
+//                         isVertical);
 //                     }
 //                     break;
 //                 case 's':
 //                     if (i < BOARD_SIZE - 1){
 //                         i += 1;
-//                         board.DisplayColorPlacement(i, j, shipSize, isVertical);
+//                         board.DisplayColorPlacement(i, j, shipSize,
+//                         isVertical);
 //                     }
 //                     break;
 //                 case 'd':
 //                     if (j < BOARD_SIZE - 1){
 //                         j += 1;
-//                         board.DisplayColorPlacement(i, j, shipSize, isVertical);
+//                         board.DisplayColorPlacement(i, j, shipSize,
+//                         isVertical);
 //                     }
 //                     break;
 //                 case 'C':
 //                     if (i + shipSize <= BOARD_SIZE){
 //                         isVertical = !isVertical;
-//                         board.DisplayColorPlacement(i, j, shipSize, isVertical);
+//                         board.DisplayColorPlacement(i, j, shipSize,
+//                         isVertical);
 //                     }
 //                     break;
 //                 case 'Y'://choice made
@@ -67,9 +72,6 @@
 //         }
 //     }
 // }
-
-
-
 
 // void Game::playerMove()
 // {
@@ -98,7 +100,8 @@
 //         y = col;
 //         if (computerBoard.isHit(x, y))
 //         {
-//             cout << RED << "You've already fired at this location! Try again.\n"
+//             cout << RED << "You've already fired at this location! Try
+//             again.\n"
 //                  << RESET_COLOR;
 //         }
 //         else
@@ -135,11 +138,13 @@
 //         {
 //             if (playerBoard.checkHit(p.x, p.y))
 //             {
-//                 cout << "Computer's turn: Hit at " << char('A' + p.x) << p.y + 1 << endl;
+//                 cout << "Computer's turn: Hit at " << char('A' + p.x) << p.y
+//                 + 1 << endl;
 //             }
 //             else
 //             {
-//                 cout << "Computer's turn: Miss at " << char('A' + p.x) << p.y + 1 << endl;
+//                 cout << "Computer's turn: Miss at " << char('A' + p.x) << p.y
+//                 + 1 << endl;
 //             }
 //             break;
 //         }

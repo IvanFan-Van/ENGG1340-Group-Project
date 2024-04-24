@@ -1,7 +1,7 @@
 #include "battleship/board.h"
-#include "battleship/utilities.h"
 #include "common/color.h"
 #include "common/constants.h"
+#include "common/utilities.h"
 #include <iostream>
 
 using namespace std;

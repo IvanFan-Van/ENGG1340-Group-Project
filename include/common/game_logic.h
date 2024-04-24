@@ -3,8 +3,8 @@
 
 #include "battleship/board.h"
 #include "battleship/keyboard.h"
-#include "battleship/utilities.h"
 #include "color.h"
+#include "common/utilities.h"
 #include "constants.h"
 
 using namespace std;
@@ -50,57 +50,7 @@ public:
   //   }
   // }
 
-  void placeShips(Board &board, int shipSize) {
-    char key;
-    bool placed = false;
-    int i = STARTPOINT, j = STARTPOINT;
-    bool isVertical = true;
-    board.DisplayColorPlacement(i, j, shipSize, isVertical);
-    while (!placed) {
-      key = keyboard();
-      switch (key) {
-      case 'w':
-        if (i > 0) {
-          i -= 1;
-          board.DisplayColorPlacement(i, j, shipSize, isVertical);
-        }
-        break;
-      case 'a':
-        if (j > 0) {
-          j -= 1;
-          board.DisplayColorPlacement(i, j, shipSize, isVertical);
-        }
-        break;
-      case 's':
-        if (i < BOARD_SIZE - shipSize) {
-          i += 1;
-          board.DisplayColorPlacement(i, j, shipSize, isVertical);
-        }
-        break;
-      case 'd':
-        if (j < BOARD_SIZE - shipSize) {
-          j += 1;
-          board.DisplayColorPlacement(i, j, shipSize, isVertical);
-        }
-        break;
-      case 'C':
-        if ((isVertical ? j : i) + shipSize <= BOARD_SIZE) {
-          isVertical = !isVertical;
-          board.DisplayColorPlacement(i, j, shipSize, isVertical);
-        }
-        break;
-      case 'Y': // choice made
-        if (board.isValidPlacement(i, j, shipSize, isVertical)) {
-          placed = true;
-          board.placeShip(i, j, shipSize, isVertical);
-        }
-        break;
-      case 'N': // 加了个中途退出功能，此处待定
-        placed = true;
-        break;
-      }
-    }
-  }
+  void placeShips(Board &board, int shipSize);
 
   void getMoveFromPlayer(Board playerBoard, Board opponentBoard, int &x,
                          int &y);
