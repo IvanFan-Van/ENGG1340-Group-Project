@@ -111,10 +111,10 @@ void displayLogo() {
  */
 void displayMenu(bool isComputerSelected) {
   cout << "Select Game Mode:\n";
-  cout << (isComputerSelected ? string(YELLOW) + "=> Computer <=" + RESET_COLOR
+  cout << (isComputerSelected ? YELLOW + "=> Computer <=" + RESET_COLOR
                               : "  Computer  ")
        << endl;
-  cout << (!isComputerSelected ? string(YELLOW) + "=> Online <=" + RESET_COLOR
+  cout << (!isComputerSelected ? YELLOW + "=> Online <=" + RESET_COLOR
                                : "  Online  ")
        << endl;
 
