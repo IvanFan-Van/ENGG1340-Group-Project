@@ -25,10 +25,6 @@ char keyboard(){
 					key = 'Y';
 					exit = true;
 					break;
-				case 27://ESC key pressed
-					key = 'N';
-					exit = true;
-					break;
 				case 'w': //moving upwards, denoted by 'w'
 				case 'W':
 					key = 'w';
@@ -72,6 +68,11 @@ char keyboard(){
                             }
                         }
                     }
+					else{	//ESC key pressed
+						key = 'N';
+						exit = true;
+						break;
+					}
                     break;
 			}
 		}

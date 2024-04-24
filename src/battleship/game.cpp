@@ -3,6 +3,7 @@
 #include "battleship/utilities.h"
 #include "battleship/action.h"
 #include "battleship/color.h"
+#include "battleship/keyboard.h"
 #include <iostream>
 #include <limits>
 #include <ios>
@@ -13,28 +14,84 @@ using namespace std;
 
 void Game::placeShips(Board &board, bool isPlayer)
 {
-    for (int shipSize : SHIPS)
-    {
-
-        if (isPlayer)
-        {
-            gameLogic.placeShips(board, shipSize);
-        }
-        else
-        {
-            while (true)
-            {
-                Point p = board.getRandomPoint();
-                bool isVertical = rand() % 2 == 0;
-                if (board.isValidPlacement(p.x, p.y, shipSize, isVertical))
-                {
-                    board.placeShip(p.x, p.y, shipSize, isVertical);
+    char key;
+    bool placed;
+    for (int shipSize : SHIPS){
+        placed = false;
+        int i = STARTPOINT - 1, j = STARTPOINT - 1;
+        bool isVertical = true;
+        board.DisplayColorPlacement(i, j, shipSize, isVertical);
+        while (!placed){
+            key = keyboard();
+            switch (key){
+                case 'w':
+                    if (i > 0){
+                        i -= 1;
+                        board.DisplayColorPlacement(i, j, shipSize, isVertical);
+                    }
                     break;
-                }
+                case 'a':
+                    if (j > 0){
+                        j -= 1;
+                        board.DisplayColorPlacement(i, j, shipSize, isVertical);
+                    }
+                    break;
+                case 's':
+                    if (i < BOARD_SIZE - 1){
+                        i += 1;
+                        board.DisplayColorPlacement(i, j, shipSize, isVertical);
+                    }
+                    break;
+                case 'd':
+                    if (j < BOARD_SIZE - 1){
+                        j += 1;
+                        board.DisplayColorPlacement(i, j, shipSize, isVertical);
+                    }
+                    break;
+                case 'C':
+                    if (i + shipSize <= BOARD_SIZE){
+                        isVertical = !isVertical;
+                        board.DisplayColorPlacement(i, j, shipSize, isVertical);
+                    }
+                    break;
+                case 'Y'://choice made
+                    if (board.isValidPlacement(i, j, shipSize, isVertical)){
+                        placed = true;
+                        board.placeShip(i, j, shipSize, isVertical);
+                    }
+                    break;
+                case 'N'://加了个中途退出功能，此处待定
+                    placed = true;
+                    break;
             }
         }
     }
 }
+
+// void Game::placeShips(Board &board, bool isPlayer)
+// {
+//     for (int shipSize : SHIPS)
+//     {
+
+//         if (isPlayer)
+//         {
+//             gameLogic.placeShips(board, shipSize);
+//         }
+//         else
+//         {
+//             while (true)
+//             {
+//                 Point p = board.getRandomPoint();
+//                 bool isVertical = rand() % 2 == 0;
+//                 if (board.isValidPlacement(p.x, p.y, shipSize, isVertical))
+//                 {
+//                     board.placeShip(p.x, p.y, shipSize, isVertical);
+//                     break;
+//                 }
+//             }
+//         }
+//     }
+// }
 
 void Game::playerMove()
 {
