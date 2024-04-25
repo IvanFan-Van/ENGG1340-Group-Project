@@ -130,9 +130,9 @@ void GameLogic::getMoveFromPlayer(Board playerBoard, Board opponentBoard,
           placed = true;
         }
         break;
-      case 'N': // 加了个中途退出功能，此处待定
-        placed = true;
-        break;
+      // case 'N': // 加了个中途退出功能，此处待定
+      //   placed = true;
+      //   break;
     }
   }
 }
