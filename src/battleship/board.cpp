@@ -142,9 +142,17 @@ bool Board::isOccupied(int x, int y) { return board[x][y] != EMPTY; }
 
 bool Board::isHit(int x, int y) { return hits[x][y]; }
 
-void Board::displayRow(int row, bool showShips, bool isSelected) const {
+void Board::displayRow(int row, bool showShips, int col) const {
   for (int j = 0; j < BOARD_SIZE; ++j) {
-    if (showShips || hits[row][j]) {
+    if (!showShips && col == j){
+      if (!hits[row][j]){
+        cout << GREEN << '+' << ' ';
+      }
+      else{
+        cout << RED << '+' << ' ';
+      }
+    }
+    else if (showShips || hits[row][j]) {
       if (hits[row][j]) {
         if (board[row][j] == HIT) {
           cout << HIT_CELL << ' ';
@@ -173,11 +181,13 @@ void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
   clearScreen();
   cout << "Place a ship of size " << size << endl;
   cout << "Please use \"wasd\" or arrow keys to move your ship, \nOr press the "
-          "spacebar to change its orientation. Note: upperleft corner will be "
+       << YELLOW << "spacebar" << RESET_COLOR
+       << " to change its orientation. Note: upperleft corner will be "
           "fixed during rotation."
        << endl;
-  cout << "When the ship is green, it is a valid placement!" << endl;
-  cout << "Press the Enter key to place this ship." << endl;
+  cout << "When the ship is" << RED << " red" << RESET_COLOR
+       << ", it is an invalid placement." << endl;
+  cout << "Press the ENTER key to place this ship." << endl;
 
   cout << "  0 1 2 3 4 5 6 7 8 9\n";
   bool isValid = isValidPlacement(x, y, size, isVertical);

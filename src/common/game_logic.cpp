@@ -1,5 +1,6 @@
 #include "common/game_logic.h"
 #include "common/utilities.h"
+#include "battleship/keyboard.h"
 #include <iostream>
 #include <regex>
 
@@ -84,38 +85,55 @@ void GameLogic::placeShips(Board &board, int shipSize) {
         board.placeShip(i, j, shipSize, isVertical);
       }
       break;
-    case 'N': // 加了个中途退出功能，此处待定
-      placed = true;
-      break;
+    // case 'N': // 加了个中途退出功能，此处待定
+    //   placed = true;
+    //   break;
     }
   }
 }
 
 void GameLogic::getMoveFromPlayer(Board playerBoard, Board opponentBoard,
-                                  int &x, int &y) {
-  displayBoardsSideBySide(playerBoard, opponentBoard, true);
-  // 获取用户输入
-  string input;
-  // 解析用户输入
-  char row;
+                                  int &i, int &j) {
   int col;
-  while (true) {
-    cout << "\nYour turn.\nEnter coordinates to fire: ";
-    getline(cin, input);
-    regex pattern("[A-J][0-9]");
-    if (!regex_match(input, pattern)) {
-      cout << RED << "Invalid input! Try again.\n" << RESET_COLOR;
-      continue;
-    }
-    row = input[0];
-    col = input[1] - '0';
-    x = row - 'A';
-    y = col;
-    if (opponentBoard.isHit(x, y)) {
-      cout << RED << "You've already fired at this location! Try again.\n"
-           << RESET_COLOR;
-    } else {
-      break;
+  bool placed = false;
+  int i = STARTPOINT, j = STARTPOINT;
+  displayBoardsSideBySide(playerBoard, opponentBoard, true, false, i, j);
+  while (!placed) {
+    char key = keyboard();
+    switch (key) {
+      case 'w':
+        if (i > 0) {
+          i -= 1;
+          displayBoardsSideBySide(playerBoard, opponentBoard, true, false, i, j);
+        }
+        break;
+      case 'a':
+        if (j > 0) {
+          j -= 1;
+          displayBoardsSideBySide(playerBoard, opponentBoard, true, false, i, j);
+
+        }
+        break;
+      case 's':
+        if (i < BOARD_SIZE - 1) {
+          i += 1;
+          displayBoardsSideBySide(playerBoard, opponentBoard, true, false, i, j);
+        }
+        break;
+      case 'd':
+        if (j < BOARD_SIZE - 1) {
+          j += 1;
+          displayBoardsSideBySide(playerBoard, opponentBoard, true, false, i, j);
+        }
+        break;
+      case 'Y': // choice made
+        if (!opponentBoard.isHit(i, j)) {
+          placed = true;
+        }
+        break;
+      case 'N': // 加了个中途退出功能，此处待定
+        placed = true;
+        break;
     }
   }
 }
