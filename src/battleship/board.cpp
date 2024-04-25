@@ -179,7 +179,7 @@ Point Board::getRandomPoint() {
 
 void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
   clearScreen();
-  cout << "Place a ship of size " << CYAN << BOLD << size << RESET_COLOR << endl;
+  cout << "Place a ship of size " << CYAN << BOLD << size << RESET_COLOR << endl << endl;
   cout << "Please use " << ITALIC << UNDERLINE << "wasd " << RESET_COLOR << "or "
        << ITALIC << UNDERLINE << "arrow keys" << RESET_COLOR 
        << " to move your ship, \nOr press the "
