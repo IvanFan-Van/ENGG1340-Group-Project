@@ -149,7 +149,7 @@ void Board::displayRow(int row, bool showShips, int col) const {
         cout << GREEN << '#' << ' ' << RESET_COLOR;
       }
       else{
-        cout << RED_BG << '#' << ' ' << RESET_COLOR;
+        cout << RED_BG << '#' << RESET_COLOR << ' ';
       }
     }
     else if (showShips || hits[row][j]) {
@@ -180,10 +180,10 @@ Point Board::getRandomPoint() {
 void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
   clearScreen();
   cout << "Place a ship of size " << CYAN << size << RESET_COLOR << endl;
-  cout << "Please use " << ITALIC << "wasd or arrow keys" << RESET_COLOR 
+  cout << "Please use " << ITALIC << UNDERLINE << "wasd or arrow keys" << RESET_COLOR 
        << " to move your ship, \nOr press the "
-       << BOLD << "[  spacebar  ]" << RESET_COLOR
-       << " to change its orientation. /nNote: upperleft corner will be "
+       << BOLD << UNDERLINE << BLINKING << "[  spacebar  ]" << RESET_COLOR
+       << " to change its orientation. \nNote: upperleft corner will be "
           "fixed during rotation."
        << endl;
   cout << "When the ship is" << RED << " red" << RESET_COLOR
