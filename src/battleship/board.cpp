@@ -146,10 +146,10 @@ void Board::displayRow(int row, bool showShips, int col) const {
   for (int j = 0; j < BOARD_SIZE; ++j) {
     if (!showShips && col == j){
       if (!hits[row][j]){
-        cout << GREEN << '+' << ' ';
+        cout << GREEN << '↓' << ' ' << RESET_COLOR;
       }
       else{
-        cout << RED << '+' << ' ';
+        cout << YELLOW << '↓' << ' ' << RESET_COLOR;
       }
     }
     else if (showShips || hits[row][j]) {
