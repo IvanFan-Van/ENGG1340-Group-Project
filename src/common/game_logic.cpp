@@ -95,7 +95,7 @@ void GameLogic::placeShips(Board &board, int shipSize) {
 void GameLogic::getMoveFromPlayer(Board playerBoard, Board opponentBoard,
                                   int &i, int &j) {
   bool placed = false;
-  int i = STARTPOINT, j = STARTPOINT;
+  i = STARTPOINT, j = STARTPOINT;
   displayBoardsSideBySide(playerBoard, opponentBoard, true, i, j, false);
   while (!placed) {
     char key = keyboard();

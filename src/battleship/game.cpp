@@ -95,14 +95,14 @@ void Game::start() {
     if (playerTurn) {
       playerMove();
       if (computerBoard.allShipsSunk()) {
-        displayBoardsSideBySide(playerBoard, computerBoard, true, true);
+        displayBoardsSideBySide(playerBoard, computerBoard, true, -1, -1, true);
         cout << YELLOW << "Congratulations! You win!\n" << RESET_COLOR;
         break;
       }
     } else {
       computerMove();
       if (playerBoard.allShipsSunk()) {
-        displayBoardsSideBySide(playerBoard, computerBoard, true, true);
+        displayBoardsSideBySide(playerBoard, computerBoard, true, -1, -1, true);
         cout << RED << "Sorry, computer wins!\n" << RESET_COLOR;
         break;
       }

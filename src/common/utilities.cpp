@@ -9,7 +9,6 @@ void displayBoardsSideBySide(const Board &playerBoard,
                              Board &opponentBoard, bool showPlayerShips, int x, int y,
                              bool showOpponentShips = false) {
   clearScreen();
-  bool isValid = opponentBoard.isHit(x, y);
   cout << "  0 1 2 3 4 5 6 7 8 9      0 1 2 3 4 5 6 7 8 9\n";
   for (int i = 0; i < BOARD_SIZE; ++i) {
     // Display player's board row

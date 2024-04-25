@@ -94,7 +94,7 @@ void ClientGame::playerMove() {
     }
 
     getGameStatus();
-    displayBoardsSideBySide(playerBoard, opponentBoard, true);
+    displayBoardsSideBySide(playerBoard, opponentBoard, true, -1, -1);
     cout << "Waiting for the opponent to move...\n";
     checkWin();
   } else {
@@ -165,7 +165,7 @@ string trim(const string &str) {
 
 void ClientGame::handleLost() {
   getGameStatus();
-  displayBoardsSideBySide(playerBoard, opponentBoard, true, true);
+  displayBoardsSideBySide(playerBoard, opponentBoard, true, -1, -1, true);
   cout << RED << "Sorry, You Lose\n" << RESET_COLOR;
   stop();
 }
