@@ -94,36 +94,35 @@ void GameLogic::placeShips(Board &board, int shipSize) {
 
 void GameLogic::getMoveFromPlayer(Board playerBoard, Board opponentBoard,
                                   int &i, int &j) {
-  int col;
   bool placed = false;
   int i = STARTPOINT, j = STARTPOINT;
-  displayBoardsSideBySide(playerBoard, opponentBoard, true, false, i, j);
+  displayBoardsSideBySide(playerBoard, opponentBoard, true, i, j, false);
   while (!placed) {
     char key = keyboard();
     switch (key) {
       case 'w':
         if (i > 0) {
           i -= 1;
-          displayBoardsSideBySide(playerBoard, opponentBoard, true, false, i, j);
+          displayBoardsSideBySide(playerBoard, opponentBoard, true, i, j, false);
         }
         break;
       case 'a':
         if (j > 0) {
           j -= 1;
-          displayBoardsSideBySide(playerBoard, opponentBoard, true, false, i, j);
+          displayBoardsSideBySide(playerBoard, opponentBoard, true, i, j, false);
 
         }
         break;
       case 's':
         if (i < BOARD_SIZE - 1) {
           i += 1;
-          displayBoardsSideBySide(playerBoard, opponentBoard, true, false, i, j);
+          displayBoardsSideBySide(playerBoard, opponentBoard, true, i, j, false);
         }
         break;
       case 'd':
         if (j < BOARD_SIZE - 1) {
           j += 1;
-          displayBoardsSideBySide(playerBoard, opponentBoard, true, false, i, j);
+          displayBoardsSideBySide(playerBoard, opponentBoard, true, i, j, false);
         }
         break;
       case 'Y': // choice made
