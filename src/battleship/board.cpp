@@ -179,16 +179,19 @@ Point Board::getRandomPoint() {
 
 void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
   clearScreen();
-  cout << "Place a ship of size " << CYAN << size << RESET_COLOR << endl;
-  cout << "Please use " << ITALIC << UNDERLINE << "wasd or arrow keys" << RESET_COLOR 
-       << " to move your ship, \nOr press the "
-       << BOLD << UNDERLINE << BLINKING << "[  spacebar  ]" << RESET_COLOR
-       << " to change its orientation. \nNote: upperleft corner will be "
+  cout << "Place a ship of size " << CYAN << BOLD << size << RESET_COLOR << endl;
+  cout << "Please use " << ITALIC << UNDERLINE << "wasd" << RESET_COLOR << " or "
+       << ITALIC << UNDERLINE << "arrow keys" << RESET_COLOR 
+       << " to move your ship, \nOr press the ["
+       << BOLD << UNDERLINE << BLINKING << "  spacebar  " << RESET_COLOR
+       << "] to change its orientation. \nNote: upperleft corner will be "
           "fixed during rotation."
-       << endl;
+       << endl << endl;
   cout << "When the ship is" << RED << " red" << RESET_COLOR
        << ", it is an invalid placement." << endl;
-  cout << "Press the " << GREEN << "Enter" << RESET_COLOR
+  cout << "When it is " << GREEN << "green" << RESET_COLOR
+       << ", it is valid!" << endl;
+  cout << "Press the " << BOLD << CYAN << "Enter" << RESET_COLOR
        << " key to place this ship." << endl << endl;
 
   cout << "  0 1 2 3 4 5 6 7 8 9\n";
