@@ -19,10 +19,10 @@ void displayBoardsSideBySide(const Board &playerBoard,
     // Display computer's board row
     cout << char('A' + i) << ' ';
     if (x == i){
-      opponentBoard.displayRow(i, showPlayerShips, y);
+      opponentBoard.displayRow(i, showOpponentShips, y);
     }
     else{
-      opponentBoard.displayRow(i, showPlayerShips, -1);
+      opponentBoard.displayRow(i, showOpponentShips, -1);
     }
     cout << endl;
   }
