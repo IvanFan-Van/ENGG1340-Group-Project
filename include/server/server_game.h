@@ -1,19 +1,20 @@
 #ifndef SERVERGAME_H
 #define SERVERGAME_H
 
-#include "battleship/board.h"
 #include "battleship/action.h"
+#include "battleship/board.h"
 #include <string>
 #include <unordered_map>
 
 using namespace std;
 
-class ServerGame
-{
+class ServerGame {
 private:
   unordered_map<int, Board> boards;
-  int currentPlayer;                    // A flag indicating whether it is the player's turn.
-  unordered_map<int, bool> playerTurns; // mapping from player fd to bool indicating whether it is the player's turn
+  int currentPlayer; // A flag indicating whether it is the player's turn.
+  unordered_map<int, bool>
+      playerTurns; // mapping from player fd to bool indicating whether it is
+                   // the player's turn
   int player1;
   int player2;
 
@@ -37,6 +38,8 @@ public:
 
   void handlePlayerAction(const Action &action, size_t bytes, int fd);
 
+  void updateBoard(int client_fd, Board board);
+
   /**
    * @brief Default constructor for the ServerGame class.
    */
@@ -52,7 +55,8 @@ public:
   /**
    * @brief Starts the game.
    *
-   * This function starts the game by initializing the boards, placing the ships, and executing the turns until the game is over.
+   * This function starts the game by initializing the boards, placing the
+   * ships, and executing the turns until the game is over.
    */
   void start();
 

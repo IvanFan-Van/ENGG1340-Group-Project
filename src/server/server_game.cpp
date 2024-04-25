@@ -2,6 +2,7 @@
 #include "battleship/action.h"
 #include "client/ctcpclient.h"
 #include "common/constants.h"
+#include "common/serialization.h"
 #include "common/utilities.h"
 #include <iostream>
 #include <stdlib.h>
@@ -39,12 +40,6 @@ ServerGame::~ServerGame() {
 
 void ServerGame::handlePlayerAction(const Action &action, size_t bytes,
                                     int client_fd) {
-  if (bytes != sizeof(Action)) {
-    cerr << "Invalid action size"
-         << "(" << bytes << ")"
-         << " received from client " << client_fd << endl;
-    return;
-  }
 
   switch (action.type) {
   case INIT: {
@@ -112,11 +107,8 @@ void ServerGame::handleInitAction(const Action &action, int client_fd) {
   // 从客户端接收棋盘信息, 并初始化棋盘
   cout << "Place ships for player " << client_fd << endl;
   // 从客户端接收棋盘信息
-  for (int i = 0; i < BOARD_SIZE; i++) {
-    for (int j = 0; j < BOARD_SIZE; j++) {
-      boards[client_fd].board[i][j] = action.initData.board[i][j];
-    }
-  }
+  Board board = deserializeBoard(string(action.data));
+  boards[client_fd] = board;
   cout << "player " << client_fd << " initialized the board successfully"
        << endl;
 }
@@ -155,8 +147,9 @@ void ServerGame::handleStartAction(const Action &action, int fd) {
  * 处理攻击行为
  */
 void ServerGame::handleShootAction(const Action &action, int client_fd) {
-  cout << "Received shoot action from client " << client_fd << ": "
-       << action.shootData.x << ", " << action.shootData.y << endl;
+  Point point = deserializePoint(action.data);
+  cout << "Received shoot action from client " << client_fd << ": " << point.x
+       << ", " << point.y << endl;
 
   // 检查是否是当前玩家回合
   if (client_fd != currentPlayer) {
@@ -164,8 +157,8 @@ void ServerGame::handleShootAction(const Action &action, int client_fd) {
     return;
   }
 
-  int x = action.shootData.x;
-  int y = action.shootData.y;
+  int x = point.x;
+  int y = point.y;
   int opponent_fd = client_fd == player1 ? player2 : player1;
   Board &opponentBoard = boards[opponent_fd];
   bool hit = opponentBoard.handleHit(x, y);
@@ -219,16 +212,23 @@ void ServerGame::handleGetGameStatusAction(const Action &action,
 
   // 向客户端发送自己棋盘信息
   Board &playerBoard = boards[client_fd];
-  if (send(client_fd, &playerBoard, sizeof(playerBoard), 0) == -1) {
+  string serializedPlayerBoard = serializeBoard(playerBoard);
+  cout << "展示序列化后的玩家棋盘信息: " << serializedPlayerBoard << endl;
+  if (send(client_fd, serializedPlayerBoard.c_str(),
+           serializedPlayerBoard.size(), 0) == -1) {
     cout << "Failed to send player board to client " << client_fd << endl;
   };
 
   // 向客户端发送对手棋盘信息
   int opponent_fd = client_fd == player1 ? player2 : player1;
   Board &opponentBoard = boards[opponent_fd];
-  if (send(client_fd, &opponentBoard, sizeof(opponentBoard), 0) == -1) {
+  string serializedOpponentBoard = serializeBoard(opponentBoard);
+  cout << "展示序列化后的对手棋盘信息: " << serializedOpponentBoard << endl;
+  if (send(client_fd, serializedOpponentBoard.c_str(),
+           serializedOpponentBoard.size(), 0) == -1) {
     cout << "Failed to send opponent board to client " << client_fd << endl;
   };
+  cout << "序列化信息发送成功" << endl;
 }
 
 bool ServerGame::fullyInitialized() {

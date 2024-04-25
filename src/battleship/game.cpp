@@ -12,26 +12,9 @@
 
 using namespace std;
 
-// void Game::placeShips(Board &board, bool isPlayer) {
-//   for (int shipSize : SHIPS) {
-
-//     if (isPlayer) {
-//       gameLogic.placeShips(board, shipSize);
-//     } else {
-//       while (true) {
-//         Point p = board.getRandomPoint();
-//         bool isVertical = rand() % 2 == 0;
-//         if (board.isValidPlacement(p.x, p.y, shipSize, isVertical)) {
-//           board.placeShip(p.x, p.y, shipSize, isVertical);
-//           break;
-//         }
-//       }
-//     }
-//   }
-// }
-
 void Game::placeShips(Board &board, bool isPlayer) {
   for (int shipSize : SHIPS) {
+    // 创建一个船对象
     Ship ship(shipSize);
     if (isPlayer) {
       gameLogic.placeShips(board, ship);

@@ -1,7 +1,7 @@
 # 编译器
 CXX = g++
 # 标志
-FLAGS = -pedantic-errors -std=c++17 -static -MMD -MP -Wall
+FLAGS = -pedantic-errors -std=c++17 -static -MMD -MP -Wall -g
 
 # 基本构建配置
 SRC_DIR = ./src
@@ -14,7 +14,7 @@ DEP_FILES = $(wildcard $(BUILD_DIR)/*.d)
 # 目标
 TARGETS = main server
 
-.PHONY: all clean
+.PHONY: all clean test
 
 all: $(TARGETS)
 
@@ -44,6 +44,14 @@ server: $(BUILD_DIR)/server
 
 $(BUILD_DIR)/server: $(SERVER_OBJECTS) $(GAME_OBJECTS) $(COMMON_OBJECTS)
 	$(CXX) $(FLAGS) -I ./include $^ -pthread -o $@
+
 # clean
 clean:
 	rm -rf $(BUILD_DIR)/*.o $(BUILD_DIR)/*.d
+
+TEST_TARGETS = $(patsubst ./test/%.cpp, ./build/%, $(wildcard ./test/*.cpp))
+
+test: $(TEST_TARGETS)
+
+./build/test_%: ./test/test_%.cpp $(GAME_OBJECTS) $(COMMON_OBJECTS)
+	$(CXX) $(FLAGS) -I ./include $^ -o $@

@@ -3,6 +3,7 @@
 #include "battleship/game.h"
 #include "client/ctcpclient.h"
 #include "common/constants.h"
+#include "common/serialization.h"
 #include "common/utilities.h"
 #include <algorithm>
 #include <iostream>
@@ -21,14 +22,7 @@ void ClientGame::init(Board &board) {
   board.display(true);
   // cout << "size of Action: " << sizeof(Action) << endl;
   // 初始化棋盘
-  Action initAction;
-  initAction.type = INIT;
-  for (int i = 0; i < BOARD_SIZE; i++) {
-    for (int j = 0; j < BOARD_SIZE; j++) {
-      initAction.initData.board[i][j] = playerBoard.board[i][j];
-    }
-  }
-
+  Action initAction(INIT, serializeBoard(board));
   // cout << "size of initAction: " << sizeof(initAction) << endl;
 
   if (!client.send(&initAction, sizeof(initAction))) {
@@ -38,26 +32,34 @@ void ClientGame::init(Board &board) {
 }
 
 void ClientGame::getGameStatus() {
-  Action action;
-  action.type = GET_GAME_STATUS;
-  action.getGameStatusData = {};
+  Action action(GET_GAME_STATUS);
   if (!client.send(&action, sizeof(action))) {
     cout << "Failed to send get game status action to server\n";
     return;
   };
 
   Board playerBoard;
-  if (!client.recv(&playerBoard, sizeof(playerBoard))) {
+  char serializedBoard[1024];
+  if (!client.recv(serializedBoard, sizeof(serializedBoard))) {
     cout << "Failed to receive player board from server\n";
     return;
   };
+
+  cout << "接收到的我的棋盘：" << serializedBoard << "\n";
+
+  // cout << "Successfully received player board from server\n";
+  playerBoard = deserializeBoard(serializedBoard);
   this->playerBoard = playerBoard;
 
   Board opponentBoard;
-  if (!client.recv(&opponentBoard, sizeof(opponentBoard))) {
+  char serializedBoard2[1024];
+  if (!client.recv(serializedBoard2, sizeof(serializedBoard2))) {
     cout << "Failed to receive opponent board from server\n";
     return;
   };
+
+  cout << "接收到的对手的棋盘：" << serializedBoard2 << "\n";
+  opponentBoard = deserializeBoard(serializedBoard2);
   this->opponentBoard = opponentBoard;
 
   cout << "Successfully received game status from server\n";
@@ -66,14 +68,11 @@ void ClientGame::getGameStatus() {
 void ClientGame::playerMove() {
   getGameStatus();
 
-  Action action;
-  action.type = SHOOT;
   int x = -1;
   int y = -1;
   gameLogic.getMoveFromPlayer(playerBoard, opponentBoard, x, y);
 
-  action.shootData.x = x;
-  action.shootData.y = y;
+  Action action(SHOOT, serializePoint(Point(x, y)));
 
   if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
 
@@ -118,9 +117,7 @@ ClientGame::~ClientGame() {
 }
 
 void ClientGame::checkWin() {
-  Action action;
-  action.type = CHECK_WIN;
-  action.checkWinData = {};
+  Action action(CHECK_WIN);
   if (!client.send(&action, sizeof(action))) {
     cout << "Failed to send check win action to server\n";
     return;
@@ -136,9 +133,7 @@ void ClientGame::checkWin() {
 }
 
 void ClientGame::checkStart() {
-  Action action;
-  action.type = START;
-  action.startData = {};
+  Action action(START);
   if (!client.send(&action, sizeof(action))) {
     cout << "Failed to send start action to server\n";
     return;

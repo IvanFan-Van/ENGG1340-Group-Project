@@ -46,12 +46,21 @@ void handleMatchedClients(int client1_fd, int client2_fd) {
         Action action;
         // 接收数据
         ssize_t bytes_received = recv(activate_fd, &action, sizeof(Action), 0);
-        if (bytes_received > 0) {
+        if (bytes_received == sizeof(Action)) {
+          // print Action structure
+          cout << "Received Action from client " << activate_fd << ": "
+               << action.type << " " << action.data << endl;
+
           game.handlePlayerAction(action, bytes_received, activate_fd);
         }
 
-        cout << "Received " << bytes_received << " bytes from client "
-             << activate_fd << endl;
+        if (bytes_received != sizeof(Action)) {
+          cout << "Failed to receive data from client " << activate_fd << endl;
+          send(activate_fd, "Invalid message format", 21, 0);
+        }
+
+        // cout << "Received " << bytes_received << " bytes from client "
+        //      << activate_fd << endl;
 
         if (bytes_received == -1) {
           cout << "Failed to receive data from client " << activate_fd << endl;
