@@ -5,7 +5,7 @@
 
 void displayBoardsSideBySide(const Board &playerBoard,
                              const Board &opponentBoard, bool showPlayerShips,
-                             bool showOpponentShips = false);
+                             bool showOpponentShips = false, int x, int y);
 
 void clearScreen();
 
