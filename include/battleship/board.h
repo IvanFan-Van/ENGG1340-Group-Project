@@ -25,7 +25,7 @@ public:
 
   bool isHit(int x, int y);
 
-  void displayRow(int row, bool showShips) const;
+  void displayRow(int row, bool showShips, bool isSelected) const;
 
   bool allShipsPlaced();
 

@@ -1,4 +1,5 @@
 #include "battleship/board.h"
+#include "common/utilities.h"
 #include <iostream>
 
 using namespace std;
@@ -7,16 +8,17 @@ using namespace std;
 void displayBoardsSideBySide(const Board &playerBoard,
                              const Board &opponentBoard, bool showPlayerShips,
                              bool showOpponentShips = false) {
+  clearScreen();
   cout << "  0 1 2 3 4 5 6 7 8 9      0 1 2 3 4 5 6 7 8 9\n";
   for (int i = 0; i < BOARD_SIZE; ++i) {
     // Display player's board row
     cout << char('A' + i) << ' ';
-    playerBoard.displayRow(i, showPlayerShips);
+    playerBoard.displayRow(i, showPlayerShips, false);
     cout << "   "; // Space between boards
 
     // Display computer's board row
     cout << char('A' + i) << ' ';
-    opponentBoard.displayRow(i, showOpponentShips);
+    opponentBoard.displayRow(i, showOpponentShips, true);
     cout << endl;
   }
 }
