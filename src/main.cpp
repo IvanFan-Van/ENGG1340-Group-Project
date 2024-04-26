@@ -65,11 +65,11 @@ void printProgressBar(size_t current, size_t total) {
  */
 void displayLogo() {
   const string art = R"(
-      ____  ___  ______________    ___________ __  __________ 
-     / __ )/   |/_  __/_  __/ /   / ____/ ___// / / /  _/ __ \
-    / __  / /| | / /   / / / /   / __/  \__ \/ /_/ // // /_/ /
-   / /_/ / ___ |/ /   / / / /___/ /___ ___/ / __  // // ____/ 
-  /_____/_/  |_/_/   /_/ /_____/_____//____/_/ /_/___/_/      
+        ____  ___  ______________    ___________ __  __________ 
+       / __ )/   |/_  __/_  __/ /   / ____/ ___// / / /  _/ __ \
+      / __  / /| | / /   / / / /   / __/  \__ \/ /_/ // // /_/ /
+     / /_/ / ___ |/ /   / / / /___/ /___ ___/ / __  // // ____/ 
+    /_____/_/  |_/_/   /_/ /_____/_____//____/_/ /_/___/_/      
                                                               
       )";
 
@@ -105,6 +105,9 @@ void displayLogo() {
   }
   // After the final iteration, move the cursor below the art and progress bar
   std::cout << "\033[" << lines.size() + 1 << "B" << std::endl;
+
+  this_thread::sleep_for(
+      chrono::milliseconds(500)); // Delay for demonstration purposes
 }
 
 /**
@@ -135,16 +138,10 @@ void clearLinesAbove(int numLines) {
   }
 }
 
-int main(int argc, char *argv[]) {
-  enableRawMode(); // Disable standard input buffering
-
-  displayLogo();
-  this_thread::sleep_for(
-      chrono::milliseconds(500)); // Delay for demonstration purposes
-
-  bool isComputerSelected = true;
-  displayMenu(isComputerSelected);
-
+/**
+ * @brief 选择游戏模式
+ */
+void chooseMode(bool &isComputerSelected) {
   while (true) {
     char c;
     if (read(STDIN_FILENO, &c, 1) == -1) {
@@ -164,9 +161,23 @@ int main(int argc, char *argv[]) {
     clearLinesAbove(4);
     displayMenu(isComputerSelected);
   }
+}
 
-  disableRawMode(); // Restore terminal settings
+int main(int argc, char *argv[]) {
+  // Disable standard input buffering
+  enableRawMode();
+  // Display the logo
+  displayLogo();
+  // Default to computer mode
+  bool isComputerSelected = true;
+  // Display the menu
+  displayMenu(isComputerSelected);
+  // choose game mode
+  chooseMode(isComputerSelected);
+  // Restore terminal settings
+  disableRawMode();
 
+  // Start the game
   if (isComputerSelected) {
     cout << "Starting Game With Computer...\n";
     sleep(1); // Delay for demonstration purposes
@@ -175,7 +186,8 @@ int main(int argc, char *argv[]) {
   } else {
     cout << "Starting Online Game...\n";
     sleep(1); // Delay for demonstration purposes
-    string DEFAULT_IP = "43.143.114.119";
+    // string DEFAULT_IP = "43.143.114.119";
+    string DEFAULT_IP = "127.0.0.1";
     // 匹配成功
     ClientGame battleshipGame = ClientGame(DEFAULT_IP);
     battleshipGame.start();

@@ -3,6 +3,7 @@
 #include "common/constants.h"
 #include "common/utilities.h"
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -83,6 +84,14 @@ bool Board::allShipsPlaced() {
   return false;
 }
 
+void Board::placeShip(Ship &ship) {
+  for (int i = 0; i < ship.size; i++) {
+    Point p = ship.cells[i];
+    board[p.x][p.y] = SHIP;
+  }
+  ships.push_back(ship);
+}
+
 void Board::placeShip(int x, int y, int size, bool isVertical) {
   if (isVertical) {
     for (int i = x; i < x + size; ++i) {
@@ -97,29 +106,51 @@ void Board::placeShip(int x, int y, int size, bool isVertical) {
 
 bool Board::handleHit(int x, int y) {
   if (hits[x][y]) {
-    // If the position was already hit before, we don't need to change anything
-    // Consider providing feedback that the position was already targeted.
+    // Position was already hit before
     return false;
   }
-  hits[x][y] =
-      true; // Record the hit attempt regardless of whether it's a hit or miss
+  // Record the hit attempt
+  hits[x][y] = true;
   if (board[x][y] == SHIP) {
-    board[x][y] = HIT; // 更新板上的位置为HIT标记
-    // 标记对角线位置为MISS，并更新hits数组
-    // 标记对角线位置为MISS
-    int dx[] = {-1, -1, 1, 1};
-    int dy[] = {-1, 1, -1, 1};
-    for (int i = 0; i < 4; ++i) {
-      int newX = x + dx[i];
-      int newY = y + dy[i];
+    // 更新板上的位置为HIT标记
+    board[x][y] = HIT;
 
-      // 检查新位置是否在棋盘范围内，并且是空的
-      if (newX >= 0 && newX < BOARD_SIZE && newY >= 0 && newY < BOARD_SIZE &&
-          board[newX][newY] == EMPTY) {
-        board[newX][newY] = MISS;
-        hits[newX][newY] = true;
+    // Mark diagonal positions as MISS
+    int diagonalOffsets[] = {-1, 1};
+    for (int dx : diagonalOffsets) {
+      for (int dy : diagonalOffsets) {
+        int newX = x + dx;
+        int newY = y + dy;
+
+        if (newX >= 0 && newX < BOARD_SIZE && newY >= 0 && newY < BOARD_SIZE &&
+            board[newX][newY] == EMPTY) {
+          board[newX][newY] = MISS;
+          hits[newX][newY] = true;
+        }
       }
     }
+
+    // Check if any ship is sunk
+    for (Ship &ship : ships) {
+      if (ship.isHit({x, y}) && ship.isSunk()) {
+        // Mark the surroundings of the sunk ship as MISS
+        for (Point &cell : ship.cells) {
+          for (int dx = -1; dx <= 1; ++dx) {
+            for (int dy = -1; dy <= 1; ++dy) {
+              int newX = cell.x + dx;
+              int newY = cell.y + dy;
+              if (newX >= 0 && newX < BOARD_SIZE && newY >= 0 &&
+                  newY < BOARD_SIZE && !hits[newX][newY]) {
+                board[newX][newY] = MISS;
+                hits[newX][newY] = true;
+              }
+            }
+          }
+        }
+        return true;
+      }
+    }
+
     return true;
   } else {
     board[x][y] = MISS; // Update the board with a MISS marker
@@ -249,4 +280,66 @@ void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
     }
     cout << endl;
   }
+}
+
+Board::Board(const Board &other) { copyFrom(other); }
+
+void Board::copyFrom(const Board &other) {
+  for (int i = 0; i < BOARD_SIZE; ++i) {
+    for (int j = 0; j < BOARD_SIZE; ++j) {
+      board[i][j] = other.board[i][j];
+      hits[i][j] = other.hits[i][j];
+    }
+  }
+  ships = other.ships;
+}
+
+string Board::serialize() {
+  ostringstream oss;
+  for (int i = 0; i < BOARD_SIZE; ++i) {
+    for (int j = 0; j < BOARD_SIZE; ++j) {
+      oss << board[i][j] << " ";
+      oss << hits[i][j] << " ";
+    }
+  }
+  oss << "\n";
+
+  for (Ship &ship : ships) {
+    oss << ship.serialize() << "|";
+  }
+  return oss.str();
+}
+
+Board Board::deserialize(const string &data) {
+  istringstream iss(data);
+  Board board;
+  for (int i = 0; i < BOARD_SIZE; ++i) {
+    for (int j = 0; j < BOARD_SIZE; ++j) {
+      iss >> board.board[i][j];
+      iss.get(); // skip '\n'
+      iss >> board.hits[i][j];
+      iss.get(); // skip '\n'
+    }
+  }
+  iss.get(); // skip '\n'
+
+  string shipData;
+  while (getline(iss, shipData, '|')) {
+    board.ships.push_back(Ship::deserialize(shipData));
+  }
+  return board;
+}
+
+ostream &operator<<(ostream &os, const Board &b) {
+  for (int i = 0; i < BOARD_SIZE; ++i) {
+    for (int j = 0; j < BOARD_SIZE; ++j) {
+      os << b.board[i][j] << " ";
+    }
+    os << endl;
+  }
+  cout << "Ships: " << endl;
+  for (const Ship &ship : b.ships) {
+    os << ship << endl;
+  }
+  return os;
 }
