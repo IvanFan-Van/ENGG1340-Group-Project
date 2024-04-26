@@ -1,18 +1,21 @@
 #include "client/client_game.h"
-#include "battleship/action.h"
 #include "battleship/game.h"
 #include "client/ctcpclient.h"
+#include "common/action.h"
 #include "common/constants.h"
-#include "common/serialization.h"
+#include "common/game_action.h"
+// #include "common/serialization.h"
 #include "common/utilities.h"
 #include <algorithm>
 #include <iostream>
 #include <regex>
+#include <sys/socket.h>
 #include <unistd.h>
 
 using namespace std;
 
 void ClientGame::init(Board &board) {
+  // 初始化船只并往board上放置
   for (int shipSize : SHIPS) {
     Ship ship(shipSize);
     gameLogic.placeShips(board, ship);
@@ -20,46 +23,60 @@ void ClientGame::init(Board &board) {
 
   // 发送初始化棋盘行为
   board.display(true);
-  // cout << "size of Action: " << sizeof(Action) << endl;
+  // cout << "size of GameAction: " << sizeof(GameAction) << endl;
   // 初始化棋盘
-  Action initAction(INIT, serializeBoard(board));
+  GameAction initAction(INIT, board.serialize());
+  string data = initAction.serialize();
   // cout << "size of initAction: " << sizeof(initAction) << endl;
 
-  if (!client.send(&initAction, sizeof(initAction))) {
+  // TODO
+  if (!client.send(data.c_str(), data.size())) {
     cout << "Failed to send board to server\n";
     return;
   };
 }
 
 void ClientGame::getGameStatus() {
-  Action action(GET_GAME_STATUS);
-  if (!client.send(&action, sizeof(action))) {
+  GameAction action(GET_GAME_STATUS);
+  string data = action.serialize();
+  if (!client.send(data.c_str(), data.size())) {
     cout << "Failed to send get game status action to server\n";
     return;
   };
 
+  // 公用缓冲区
+  char buffer[1024];
+  memset(buffer, 0, sizeof(buffer));
+
+  // 接收自己 Board
   Board playerBoard;
-  char serializedBoard[1024];
-  if (!client.recv(serializedBoard, sizeof(serializedBoard))) {
+  string receivedData1;
+  ssize_t bytes = recv(client.getSocketFd(), buffer, sizeof(buffer), 0);
+  if (bytes == -1) {
     cout << "Failed to receive player board from server\n";
     return;
   };
-
-  cout << "接收到的我的棋盘：" << serializedBoard << "\n";
-
+  receivedData1.assign(buffer, bytes);
   // cout << "Successfully received player board from server\n";
-  playerBoard = deserializeBoard(serializedBoard);
-  this->playerBoard = playerBoard;
+  this->playerBoard = Board::deserialize(receivedData1);
 
+  if (!client.send("OK", 2)) {
+    cout << "Failed to send OK to server\n";
+  };
+
+  // 接收对手 Board
   Board opponentBoard;
-  char serializedBoard2[1024];
-  if (!client.recv(serializedBoard2, sizeof(serializedBoard2))) {
+  memset(buffer, 0, sizeof(buffer));
+  bytes = recv(client.getSocketFd(), buffer, sizeof(buffer), 0);
+  if (bytes == -1) {
     cout << "Failed to receive opponent board from server\n";
     return;
   };
 
-  cout << "接收到的对手的棋盘：" << serializedBoard2 << "\n";
-  opponentBoard = deserializeBoard(serializedBoard2);
+  string receivedData2;
+  receivedData2.assign(buffer, bytes);
+
+  opponentBoard = Board::deserialize(receivedData2);
   this->opponentBoard = opponentBoard;
 
   cout << "Successfully received game status from server\n";
@@ -72,11 +89,11 @@ void ClientGame::playerMove() {
   int y = -1;
   gameLogic.getMoveFromPlayer(playerBoard, opponentBoard, x, y);
 
-  Action action(SHOOT, serializePoint(Point(x, y)));
-
+  GameAction action(SHOOT, Point(x, y).serialize());
+  string data = action.serialize();
   if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
 
-    if (!client.send(&action, sizeof(action))) {
+    if (!client.send(data.c_str(), data.size())) {
       cout << "Failed to send shoot action to server\n";
       return;
     };
@@ -117,8 +134,9 @@ ClientGame::~ClientGame() {
 }
 
 void ClientGame::checkWin() {
-  Action action(CHECK_WIN);
-  if (!client.send(&action, sizeof(action))) {
+  GameAction action(CHECK_WIN);
+  string data = action.serialize();
+  if (!client.send(data.c_str(), data.size())) {
     cout << "Failed to send check win action to server\n";
     return;
   };
@@ -133,8 +151,9 @@ void ClientGame::checkWin() {
 }
 
 void ClientGame::checkStart() {
-  Action action(START);
-  if (!client.send(&action, sizeof(action))) {
+  GameAction action(START);
+  string data = action.serialize();
+  if (!client.send(data.c_str(), data.size())) {
     cout << "Failed to send start action to server\n";
     return;
   };
@@ -197,6 +216,7 @@ void ClientGame::handleMessage(const string &rawMessage) {
 }
 
 void ClientGame::start() {
+  // 连接服务器
   if (!client.connect(ip, 3004)) {
     cout << "connect failed\n";
     stop();
@@ -231,6 +251,7 @@ void ClientGame::start() {
     }
   }
 
+  // 初始化棋盘
   init(playerBoard);
 
   // 等待游戏开始

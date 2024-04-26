@@ -1,4 +1,4 @@
-#include "battleship/action.h"
+#include "common/action.h"
 #include "common/constants.h"
 #include "server/cepollserver.h"
 #include "server/server_game.h"
@@ -42,29 +42,16 @@ void handleMatchedClients(int client1_fd, int client2_fd) {
         // 获取激活的文件描述符
         int activate_fd = events[i].data.fd;
 
-        // 为Action结构体分配内存
-        Action action;
+        char buffer[1024];
+        memset(buffer, 0, sizeof(buffer));
         // 接收数据
-        ssize_t bytes_received = recv(activate_fd, &action, sizeof(Action), 0);
-        if (bytes_received == sizeof(Action)) {
-          // print Action structure
-          cout << "Received Action from client " << activate_fd << ": "
-               << action.type << " " << action.data << endl;
+        ssize_t bytes_received = recv(activate_fd, buffer, sizeof(buffer), 0);
 
-          game.handlePlayerAction(action, bytes_received, activate_fd);
-        }
-
-        if (bytes_received != sizeof(Action)) {
-          cout << "Failed to receive data from client " << activate_fd << endl;
-          send(activate_fd, "Invalid message format", 21, 0);
-        }
-
-        // cout << "Received " << bytes_received << " bytes from client "
-        //      << activate_fd << endl;
-
+        // epoll_wait error
         if (bytes_received == -1) {
           cout << "Failed to receive data from client " << activate_fd << endl;
           break;
+          // 客户端退出
         } else if (bytes_received == 0) {
           cout << "Client " << activate_fd << " disconnected" << endl;
           // 当其中一方退出时关闭所有连接
@@ -76,6 +63,15 @@ void handleMatchedClients(int client1_fd, int client2_fd) {
           epoll_ctl(epoll_fd, EPOLL_CTL_DEL, client2_fd, nullptr);
           break;
         }
+
+        // 接收GameAction
+        string receivedData;
+        receivedData.assign(buffer, bytes_received);
+        GameAction action = GameAction::deserialize(receivedData);
+        cout << "Received Action from client " << activate_fd << ": "
+             << action.type << " " << action.data << endl;
+
+        game.handlePlayerAction(action, activate_fd);
       } else {
         cout << "epoll_wait not EPOLLIN" << endl;
         break;

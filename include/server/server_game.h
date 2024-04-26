@@ -1,8 +1,8 @@
 #ifndef SERVERGAME_H
 #define SERVERGAME_H
 
-#include "battleship/action.h"
 #include "battleship/board.h"
+#include "common/game_action.h"
 #include <string>
 #include <unordered_map>
 
@@ -18,15 +18,15 @@ private:
   int player1;
   int player2;
 
-  void handleInitAction(const Action &action, int client_fd);
+  void handleInitAction(const GameAction &action, int client_fd);
 
-  void handleStartAction(const Action &action, int fd);
+  void handleStartAction(const GameAction &action, int fd);
 
-  void handleShootAction(const Action &action, int client_fd);
+  void handleShootAction(const GameAction &action, int client_fd);
 
-  void handleCheckWinAction(const Action &action, int client_fd);
+  void handleCheckWinAction(const GameAction &action, int client_fd);
 
-  void handleGetGameStatusAction(const Action &action, int client_fd);
+  void handleGetGameStatusAction(const GameAction &action, int client_fd);
 
 public:
   /**
@@ -36,7 +36,7 @@ public:
    */
   void playerMove();
 
-  void handlePlayerAction(const Action &action, size_t bytes, int fd);
+  void handlePlayerAction(const GameAction &action, int fd);
 
   void updateBoard(int client_fd, Board board);
 
