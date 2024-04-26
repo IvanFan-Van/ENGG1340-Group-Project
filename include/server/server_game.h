@@ -10,11 +10,13 @@ using namespace std;
 
 class ServerGame {
 private:
+  // mapping client_fd -> board
   unordered_map<int, Board> boards;
-  int currentPlayer; // A flag indicating whether it is the player's turn.
-  unordered_map<int, bool>
-      playerTurns; // mapping from player fd to bool indicating whether it is
-                   // the player's turn
+  // A flag indicating whether it is the player's turn.
+  int currentPlayer;
+  // mapping from player fd to bool indicating whether it is the player's turn
+  unordered_map<int, bool> playerTurns;
+
   int player1;
   int player2;
 
@@ -28,29 +30,18 @@ private:
 
   void handleGetGameStatusAction(const GameAction &action, int client_fd);
 
+  bool fullyInitialized();
+
 public:
-  /**
-   * @brief Executes the player's move.
-   *
-   * This function is called when it is the player's turn to make a move.
-   */
-  void playerMove();
-
-  void handlePlayerAction(const GameAction &action, int fd);
-
-  void updateBoard(int client_fd, Board board);
-
-  /**
-   * @brief Default constructor for the ServerGame class.
-   */
-  ServerGame();
-
   /**
    * @brief Constructor for online playing
    */
   ServerGame(int fd1, int fd2);
 
   ~ServerGame();
+
+  // 行为处理调度器
+  void handlePlayerAction(const GameAction &action, int fd);
 
   /**
    * @brief Starts the game.
@@ -59,8 +50,6 @@ public:
    * ships, and executing the turns until the game is over.
    */
   void start();
-
-  bool fullyInitialized();
 
   void notifyPlayerTurn(int client_fd);
 
