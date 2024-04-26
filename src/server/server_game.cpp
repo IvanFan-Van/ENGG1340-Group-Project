@@ -38,6 +38,7 @@ ServerGame::~ServerGame() {
   }
 }
 
+// 行为处理调度器
 void ServerGame::handlePlayerAction(const GameAction &action, int client_fd) {
 
   switch (action.type) {
@@ -71,34 +72,6 @@ void ServerGame::handlePlayerAction(const GameAction &action, int client_fd) {
 }
 
 /**
- * 通知玩家回合
- */
-void ServerGame::notifyPlayerTurn(int fd) {
-  if (playerTurns[fd]) {
-    const char *message = "Your turn";
-    send(fd, message, strlen(message), 0);
-  } else {
-    const char *message = "Opponent's turn";
-    send(fd, message, strlen(message), 0);
-  }
-}
-
-/**
- * 切换回合
- */
-void ServerGame::switchTurn() {
-  currentPlayer = currentPlayer == player1 ? player2 : player1;
-
-  // 更新玩家回合
-  for (auto &turn : playerTurns) {
-    turn.second = !turn.second;
-  }
-
-  // 通知当前玩家回合
-  notifyPlayerTurn(currentPlayer);
-}
-
-/**
  * 处理初始化行为
  */
 void ServerGame::handleInitAction(const GameAction &action, int client_fd) {
@@ -111,7 +84,6 @@ void ServerGame::handleInitAction(const GameAction &action, int client_fd) {
   cout << "player " << client_fd << " initialized the board successfully"
        << endl;
 }
-
 /**
  * 处理开始游戏行为
  */
@@ -141,7 +113,6 @@ void ServerGame::handleStartAction(const GameAction &action, int fd) {
     this->notifyPlayerTurn(fd);
   }
 }
-
 /**
  * 处理攻击行为
  */
@@ -165,7 +136,6 @@ void ServerGame::handleShootAction(const GameAction &action, int client_fd) {
     cout << "Failed to send hit status to client " << client_fd << endl;
   };
 }
-
 /**
  * 处理检查胜利行为
  */
@@ -204,7 +174,9 @@ void ServerGame::handleCheckWinAction(const GameAction &action, int client_fd) {
     switchTurn();
   }
 }
-
+/**
+ * 处理获取游戏状态行为
+ */
 void ServerGame::handleGetGameStatusAction(const GameAction &action,
                                            int client_fd) {
   cout << "Received get game status action from client " << client_fd << endl;
@@ -239,6 +211,37 @@ void ServerGame::handleGetGameStatusAction(const GameAction &action,
   cout << "序列化信息发送成功" << endl;
 }
 
+/**
+ * 通知玩家回合
+ */
+void ServerGame::notifyPlayerTurn(int fd) {
+  if (playerTurns[fd]) {
+    const char *message = "Your turn";
+    send(fd, message, strlen(message), 0);
+  } else {
+    const char *message = "Opponent's turn";
+    send(fd, message, strlen(message), 0);
+  }
+}
+
+/**
+ * 切换回合
+ */
+void ServerGame::switchTurn() {
+  currentPlayer = currentPlayer == player1 ? player2 : player1;
+
+  // 更新玩家回合
+  for (auto &turn : playerTurns) {
+    turn.second = !turn.second;
+  }
+
+  // 通知当前玩家回合
+  notifyPlayerTurn(currentPlayer);
+}
+
+/**
+ * 判断是否初始化完毕
+ */
 bool ServerGame::fullyInitialized() {
   return boards[player1].allShipsPlaced() && boards[player2].allShipsPlaced();
 }
