@@ -186,8 +186,7 @@ int main(int argc, char *argv[]) {
   } else {
     cout << "Starting Online Game...\n";
     sleep(1); // Delay for demonstration purposes
-    // string DEFAULT_IP = "43.143.114.119";
-    string DEFAULT_IP = "127.0.0.1";
+    string DEFAULT_IP = "43.143.114.119";
     // 匹配成功
     ClientGame battleshipGame = ClientGame(DEFAULT_IP);
     battleshipGame.start();
