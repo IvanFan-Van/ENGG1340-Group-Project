@@ -1,6 +1,6 @@
 #include "battleship/game.h"
-#include "battleship/action.h"
 #include "battleship/keyboard.h"
+#include "common/action.h"
 #include "common/color.h"
 #include "common/constants.h"
 #include "common/utilities.h"

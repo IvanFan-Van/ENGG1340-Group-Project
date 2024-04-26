@@ -49,8 +49,15 @@ public:
 
   void DisplayColorPlacement(int x, int y, int size, bool isVertical);
 
+  // 序列化
+  string serialize();
+  // 反序列化
+  static Board deserialize(const string &data);
+
 private:
   void copyFrom(const Board &other);
 };
+
+ostream &operator<<(ostream &os, const Board &board);
 
 #endif // BOARD_H

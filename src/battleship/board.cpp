@@ -3,6 +3,7 @@
 #include "common/constants.h"
 #include "common/utilities.h"
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -276,4 +277,54 @@ void Board::copyFrom(const Board &other) {
     }
   }
   ships = other.ships;
+}
+
+string Board::serialize() {
+  ostringstream oss;
+  for (int i = 0; i < BOARD_SIZE; ++i) {
+    for (int j = 0; j < BOARD_SIZE; ++j) {
+      oss << board[i][j] << " ";
+      oss << hits[i][j] << " ";
+    }
+  }
+  oss << "\n";
+
+  for (Ship &ship : ships) {
+    oss << ship.serialize() << "|";
+  }
+  return oss.str();
+}
+
+Board Board::deserialize(const string &data) {
+  istringstream iss(data);
+  Board board;
+  for (int i = 0; i < BOARD_SIZE; ++i) {
+    for (int j = 0; j < BOARD_SIZE; ++j) {
+      iss >> board.board[i][j];
+      iss.get(); // skip '\n'
+      iss >> board.hits[i][j];
+      iss.get(); // skip '\n'
+    }
+  }
+  iss.get(); // skip '\n'
+
+  string shipData;
+  while (getline(iss, shipData, '|')) {
+    board.ships.push_back(Ship::deserialize(shipData));
+  }
+  return board;
+}
+
+ostream &operator<<(ostream &os, const Board &b) {
+  for (int i = 0; i < BOARD_SIZE; ++i) {
+    for (int j = 0; j < BOARD_SIZE; ++j) {
+      os << b.board[i][j] << " ";
+    }
+    os << endl;
+  }
+  cout << "Ships: " << endl;
+  for (const Ship &ship : b.ships) {
+    os << ship << endl;
+  }
+  return os;
 }

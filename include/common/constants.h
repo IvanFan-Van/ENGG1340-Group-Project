@@ -19,5 +19,6 @@ const std::string HIT_CELL = RED + HIT + RESET_COLOR;
 const std::string MISS_CELL = GREY + MISS + RESET_COLOR;
 
 const int STARTPOINT = 4;
+const int MAX_SIZE = 1024;
 
 #endif // CONSTANTS_H
