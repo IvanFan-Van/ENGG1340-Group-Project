@@ -12,11 +12,11 @@ void displayBoardsSideBySide(const Board &playerBoard, Board &opponentBoard,
   cout << "Game going on!!" << endl;
   cout << endl;
   cout << "Now, you and your opponent will take turns attacking each other..." << endl;
-  cout << "Both of your ships are hidden from the other" << RED << "until" << RESET_COLOR
-       << "they are hit, shown as " << HIT_CELL << endl;
+  cout << "Both of your ships are hidden from the other " << RED << "until" << RESET_COLOR
+       << " they are hit, shown as " << HIT_CELL << endl;
   cout << "Missed attempts will be labeled " << MISS_CELL << endl << endl;
   cout << "\"#\" shows where your next bomb targets at." << endl;
-  cout << "Use " << ITALIC << UNDERLINE << "wasd " << RESET_COLOR << "or "
+  cout << "Use " << ITALIC << UNDERLINE << "wasd" << RESET_COLOR << " or "
        << ITALIC << UNDERLINE << "arrow keys" << RESET_COLOR 
        << " to adjust its location."
        << endl;
@@ -25,7 +25,13 @@ void displayBoardsSideBySide(const Board &playerBoard, Board &opponentBoard,
   cout << RED_BG << "#" << RESET_COLOR
        << " would be invalid." << endl;
   cout << "Press the " << BOLD << CYAN << "Enter" << RESET_COLOR
-       << " key to " << RED << BOLD << "BOMBARD!!!" << RESET_COLOR << endl;
+       << " key to " << RED << BOLD << "BOMBARD!!!" << RESET_COLOR << endl << endl;
+  cout << "When you press " << BOLD << MAGENTA << "Esc" << RESET_COLOR << " or " 
+       << BOLD << MAGENTA << "q" << RESET_COLOR << ", \n"
+       << "Your game status will be " << GREEN << "saved" << RESET_COLOR
+       << ", and you will return to the main menu." << endl
+       << "Have fun!" << endl
+       << endl;
   cout << "  0 1 2 3 4 5 6 7 8 9      0 1 2 3 4 5 6 7 8 9\n";
   for (int i = 0; i < BOARD_SIZE; ++i) {
     // Display player's board row
@@ -42,7 +48,7 @@ void displayBoardsSideBySide(const Board &playerBoard, Board &opponentBoard,
     }
     cout << endl;
   }
-  cout << "       Your Board           Opponent's Board" << endl;
+  cout << "      Your Board            Opponent's Board" << endl;
 }
 
 void clearScreen() { cout << "\033[2J\033[1;1H"; }

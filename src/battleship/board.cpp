@@ -215,15 +215,15 @@ void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
   clearScreen();
   cout << "Place a ship of size " << CYAN << BOLD << size << RESET_COLOR << endl
        << endl;
-  cout << "Please use " << ITALIC << UNDERLINE << "wasd " << RESET_COLOR
-       << "or " << ITALIC << UNDERLINE << "arrow keys" << RESET_COLOR
+  cout << "Please use " << ITALIC << UNDERLINE << "wasd" << RESET_COLOR
+       << " or " << ITALIC << UNDERLINE << "arrow keys" << RESET_COLOR
        << " to move your ship, \nOr press the " << BOLD << UNDERLINE << BLINKING
        << "[  spacebar  ]" << RESET_COLOR
        << " to change its orientation. \nNote: upperleft corner will be "
           "fixed during rotation."
        << endl
        << endl;
-  cout << "When the ship is" << RED_BG << " red" << RESET_COLOR
+  cout << "When the ship is " << RED_BG << "red" << RESET_COLOR
        << ", it is an invalid placement." << endl;
   cout << "When it is " << BOLD << GREEN << "green" << RESET_COLOR
        << ", it is valid!" << endl;
@@ -264,7 +264,10 @@ void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
         if (y <= j && j < y + size && x == i) {
           if (j < BOARD_SIZE - 1) {
             if (!(isValid)) {
-              cout << RED_BG << SHIP << RESET_COLOR << ' ';
+              if (j!=y+size-1)
+                cout << RED_BG << SHIP << ' ' << RESET_COLOR;
+              else
+                cout << RED_BG << SHIP << RESET_COLOR << ' ';
             } else {
               cout << GREEN << SHIP << ' ' << RESET_COLOR;
             }
