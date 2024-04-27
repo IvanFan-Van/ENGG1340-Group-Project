@@ -5,3 +5,4 @@ lib/**/*
 .vscode
 !lib/info.txt
 build
+savegame.txt
