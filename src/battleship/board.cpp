@@ -236,13 +236,13 @@ void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
           if (j < BOARD_SIZE - 1) { // if the block is not at the rightmost end,
                                     // add a space after it
             if (!(isValid)) {
-              cout << RED << SHIP << ' ' << RESET_COLOR;
+              cout << RED_BG << SHIP << RESET_COLOR << ' ';
             } else {
               cout << GREEN << SHIP << ' ' << RESET_COLOR;
             }
           } else {
             if (!(isValid)) { // at the rightmost end -> no space added
-              cout << RED << SHIP << RESET_COLOR;
+              cout << RED_BG << SHIP << RESET_COLOR;
             } else {
               cout << GREEN << SHIP << RESET_COLOR;
             }
@@ -258,13 +258,13 @@ void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
         if (y <= j && j < y + size && x == i) {
           if (j < BOARD_SIZE - 1) {
             if (!(isValid)) {
-              cout << RED << SHIP << ' ' << RESET_COLOR;
+              cout << RED_BG << SHIP << RESET_COLOR << ' ';
             } else {
               cout << GREEN << SHIP << ' ' << RESET_COLOR;
             }
           } else {
             if (!(isValid)) {
-              cout << RED << SHIP << RESET_COLOR;
+              cout << RED_BG << SHIP << RESET_COLOR;
             } else {
               cout << GREEN << SHIP << RESET_COLOR;
             }
