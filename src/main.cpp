@@ -10,9 +10,12 @@
 #include <thread>
 #include <unistd.h>
 #include <vector>
+// 引入 ncurses 库
+#include <ncursesw/ncurses.h>
+#include <ncursesw/panel.h>
 
-#define KEY_UP 65
-#define KEY_DOWN 66
+// #define KEY_UP 65
+// #define KEY_DOWN 66
 #define ENTER_KEY 10
 
 const string DEFAULT_IP = "43.143.114.119";
@@ -46,66 +49,73 @@ void printProgressBar(size_t current, size_t total) {
   // 计算进度百分比
   float progress = static_cast<float>(current) / total;
 
-  cout << "\r\033[K"; // 清空当前行
+  int y_max, x_max;
+  getmaxyx(stdscr, y_max, x_max); // 获取屏幕尺寸
+  int y_pos = y_max / 3 + 6; // 假设Logo高度为5行，再往下一行开始打印进度条
+  int x_pos = (x_max - barWidth) / 2; // 计算进度条的居中位置
 
-  std::cout << "[";
+  move(y_pos, x_pos); // 移动到进度条开始的位置
+  clrtoeol();         // 清除当前行
+
+  printw("[");
   int pos = static_cast<int>(barWidth * progress);
   for (int i = 0; i < barWidth; ++i) {
     if (i < pos)
-      std::cout << "=";
+      printw("=");
     else if (i == pos)
-      std::cout << ">";
+      printw(">");
     else
-      std::cout << " ";
+      printw(" ");
   }
-  std::cout << "] " << int(progress * 100.0) << " %" << std::flush;
+  printw("] %d %%", int(progress * 100.0));
+  printw("\n");
+  refresh();
 }
 
 /**
  * @brief 显示游戏的Logo
  */
 void displayLogo() {
-  const string art = R"(
-        ____  ___  ______________    ___________ __  __________ 
-       / __ )/   |/_  __/_  __/ /   / ____/ ___// / / /  _/ __ \
-      / __  / /| | / /   / / / /   / __/  \__ \/ /_/ // // /_/ /
-     / /_/ / ___ |/ /   / / / /___/ /___ ___/ / __  // // ____/ 
-    /_____/_/  |_/_/   /_/ /_____/_____//____/_/ /_/___/_/      
-                                                              
-      )";
+  start_color();
+  init_pair(1, COLOR_RED, COLOR_BLACK);
 
-  // Split the art into lines
-  std::istringstream iss(art);
-  std::vector<std::string> lines;
-  std::string line;
-  while (std::getline(iss, line)) {
-    lines.push_back(line);
-  }
+  const char *logo[] = {
+      "    ____  ___  ______________    ___________ __  __________ ",
+      "   / __ )/   |/_  __/_  __/ /   / ____/ ___// / / /  _/ __ \\",
+      "  / __  / /| | / /   / / / /   / __/  \\__ \\/ /_/ // // /_/ /",
+      " / /_/ / ___ |/ /   / / / /___/ /___ ___/ / __  // // ____/",
+      "/_____/_/  |_/_/   /_/ /_____/_____//____/_/ /_/___/_/     ",
+      ""};
 
-  // Find the maximum line length to use for padding
-  size_t max_length = 0;
-  for (const auto &line : lines) {
-    if (line.length() > max_length) {
-      max_length = line.length();
-    }
-  }
+  // 计算行数
+  int num_lines = sizeof(logo) / sizeof(logo[0]);
+  int y_max, x_max;
+  getmaxyx(stdscr, y_max, x_max); // 获取屏幕尺寸
 
-  for (size_t col = 0; col <= max_length; ++col) {
-    for (const auto &line : lines) {
-      std::cout << line.substr(0, col) << std::endl;
+  // 启用蓝色和黑色颜色对
+  attron(COLOR_PAIR(1));
+  for (size_t i = 0; i < num_lines; ++i) {
+    for (size_t j = 0; j < strlen(logo[i]); ++j) {
+      int x_pos = (x_max - strlen(logo[i])) / 2 + j; // 计算每个字符的居中位置
+      mvaddch((y_max - num_lines) / 3 + i, x_pos, logo[i][j]); // 逐字符打印
+      refresh(); // 刷新屏幕以显示每个字符
+      std::this_thread::sleep_for(std::chrono::milliseconds(8)); // 等待25ms
     }
 
     // Print the progress bar at the bottom.
-    printProgressBar(col, max_length);
+    printProgressBar(i + 1, num_lines);
 
-    // Delay for demonstration purposes.
-    std::this_thread::sleep_for(std::chrono::milliseconds(25));
+    // // Delay for demonstration purposes.
+    // std::this_thread::sleep_for(std::chrono::milliseconds(25));
 
-    // Move the cursor back to the top.
-    std::cout << "\033[" << lines.size() << "A";
+    // // Move the cursor back to the top.
+    // // std::cout << "\033[" << lines.size() << "A";
+
+    // refresh(); // 刷新屏幕
   }
+  attroff(COLOR_PAIR(1));
   // After the final iteration, move the cursor below the art and progress bar
-  std::cout << "\033[" << lines.size() + 1 << "B" << std::endl;
+  // std::cout << "\033[" << lines.size() + 1 << "B" << std::endl;
 
   this_thread::sleep_for(
       chrono::milliseconds(500)); // Delay for demonstration purposes
@@ -115,16 +125,29 @@ void displayLogo() {
  * @brief 显示游戏菜单
  */
 void displayMenu(bool isComputerSelected) {
-  cout << "Select Game Mode:\n";
-  cout << (isComputerSelected ? YELLOW + "=> Computer <=" + RESET_COLOR
-                              : "  Computer  ")
-       << endl;
-  cout << (!isComputerSelected ? YELLOW + "=> Online <=" + RESET_COLOR
-                               : "  Online  ")
-       << endl;
+  const string options[] = {"Computer", "Online"};
+  int y_max, x_max;
+  getmaxyx(stdscr, y_max, x_max); // 获取屏幕尺寸
 
-  cout << "(Using the arrow keys to navigate, press Enter to select)\n";
-  cout.flush();
+  // Logo和进度条总共占用了8行，那么菜单从第9行开始
+  int y_pos = y_max / 3 + 8; // Logo和进度条下方开始的纵坐标
+  for (size_t i = 0; i < sizeof(options) / sizeof(options[0]); ++i) {
+    std::string optionText = options[i];
+    int optionLength = optionText.length();
+    int x_pos = (x_max - optionLength) / 2; // 计算居中位置
+
+    if (isComputerSelected == (i == 0)) {
+      attron(A_REVERSE); // 反转颜色以突出显示选中项
+    }
+
+    mvprintw(y_pos + i * 2, x_pos, "%s",
+             optionText.c_str()); // 居中打印每个选项
+
+    if (isComputerSelected == (i == 0)) {
+      attroff(A_REVERSE); // 关闭反转颜色
+    }
+  }
+  refresh(); // 刷新屏幕以显示菜单
 }
 
 /**
@@ -143,54 +166,73 @@ void clearLinesAbove(int numLines) {
  * @brief 选择游戏模式
  */
 void chooseMode(bool &isComputerSelected) {
-  while (true) {
-    char c;
-    if (read(STDIN_FILENO, &c, 1) == -1) {
-      perror("read");
-      exit(1);
-    }
+  // Display the logo
+  displayLogo();
 
-    if (c == '\033') { // Arrow keys are preceded by an escape sequence \033[
-      read(STDIN_FILENO, &c, 1); // Skip the [
-      read(STDIN_FILENO, &c, 1);
-      if (c == KEY_UP || c == KEY_DOWN) {
-        isComputerSelected = !isComputerSelected; // Toggle the selection
+  // Display the menu
+  displayMenu(isComputerSelected);
+
+  int ch;
+  while ((ch = getch()) != ENTER_KEY) { // 循环直到按下ENTER键
+    switch (ch) {
+    case KEY_UP:
+    case 'w': // 可选: 添加字母键支持
+    case 'W':
+      if (!isComputerSelected) { // 如果当前选中"Online"，切换到"Computer"
+        isComputerSelected = true;
+        displayMenu(isComputerSelected);
       }
-    } else if (c == ENTER_KEY) {
       break;
+    case KEY_DOWN:
+    case 's': // 可选: 添加字母键支持
+    case 'S':
+      if (isComputerSelected) { // 如果当前选中"Computer"，切换到"Online"
+        isComputerSelected = false;
+        displayMenu(isComputerSelected);
+      }
+      break;
+    default:
+      break; // 忽略其他按键
     }
-    clearLinesAbove(4);
-    displayMenu(isComputerSelected);
   }
 }
 
 int main(int argc, char *argv[]) {
-  // Disable standard input buffering
-  enableRawMode();
-  // Display the logo
-  displayLogo();
+  // 初始化 ncurses
+  initscr();
+  start_color();
+  cbreak();
+  noecho();
+  keypad(stdscr, TRUE);
+
+  curs_set(0); // 隐藏光标
+
   // Default to computer mode
   bool isComputerSelected = true;
-  // Display the menu
-  displayMenu(isComputerSelected);
+
   // choose game mode
   chooseMode(isComputerSelected);
-  // Restore terminal settings
-  disableRawMode();
 
   // Start the game
   if (isComputerSelected) {
-    cout << "Starting Game With Computer...\n";
+    // 打印信息
+    printw("\nStarting Game With Computer...\n");
+    refresh();
     sleep(1); // Delay for demonstration purposes
+    // 结束 ncurses模式
+    endwin();
+
     Game battleshipGame = Game();
     battleshipGame.start();
   } else {
-    cout << "Starting Online Game...\n";
+    printw("\nStarting Online Game...\n");
+    refresh();
     sleep(1); // Delay for demonstration purposes
+    // 结束 ncurses模式
+    endwin();
     // 匹配成功
     ClientGame battleshipGame = ClientGame(DEFAULT_IP);
     battleshipGame.start();
-    cout << "Closing Game...\n";
     battleshipGame.stop();
   }
 

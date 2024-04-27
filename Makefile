@@ -3,7 +3,7 @@ CXX = g++
 # 标志
 FLAGS = -pedantic-errors -std=c++17 -static -MMD -MP -Wall -I ./include -I ./lib/ncurses/include
 # 添加 ncurses 静态库的路径
-LDFLAGS = -L/home/ivan/remote_gp/lib/ncurses/lib -lncursesw -ltinfow
+LDFLAGS = -L/home/ivan/remote_gp/lib/ncurses/lib -lpanelw -lncursesw -ltinfow -lmenuw -lformw
 # DEBUG 标志
 DEBUG_FLAGS = -g -O0
 
