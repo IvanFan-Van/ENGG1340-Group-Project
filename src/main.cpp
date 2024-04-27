@@ -211,7 +211,7 @@ void chooseMode(bool &isComputerSelected) {
   }
 }
 
-int main(int argc, char *argv[]) {
+bool start() {
   // Disable standard input buffering
   enableRawMode();
   // clear screen
@@ -227,22 +227,29 @@ int main(int argc, char *argv[]) {
   // Restore terminal settings
   disableRawMode();
 
-  // Start the game
-  if (isComputerSelected) {
-    cout << "Starting Game With Computer...\n";
-    sleep(1); // Delay for demonstration purposes
-    Game battleshipGame = Game();
-    battleshipGame.start();
-  } else {
-    cout << "Starting Online Game...\n";
-    sleep(1); // Delay for demonstration purposes
-    string DEFAULT_IP = "43.143.114.119";
-    // 匹配成功
-    ClientGame battleshipGame = ClientGame(DEFAULT_IP);
-    battleshipGame.start();
+  return isComputerSelected;
+}
 
-    cout << "Closing Game...\n";
-    battleshipGame.stop();
+int main(int argc, char *argv[]) {
+  while (true) {
+    // Start the game
+    if (start()) {
+      cout << "Starting Game With Computer...\n";
+      sleep(1); // Delay for demonstration purposes
+      Game battleshipGame = Game();
+      battleshipGame.start();
+    } else {
+      cout << "Starting Online Game...\n";
+      sleep(1); // Delay for demonstration purposes
+      string DEFAULT_IP = "43.143.114.119";
+      // 匹配成功
+      ClientGame battleshipGame = ClientGame(DEFAULT_IP);
+      battleshipGame.start();
+
+      cout << "Closing Game...\n";
+      battleshipGame.stop();
+    }
+    sleep(1);
   }
 
   return 0;
