@@ -247,7 +247,7 @@ int main(int argc, char *argv[]) {
   while (true) {
     // Start the game
     int option = start();
-    cout << "option: " << option << endl;
+    // cout << "option: " << option << endl;
     switch (option) {
     case 0: {
       printCentered("Starting Game With Computer...", getTerminalWidth());
@@ -274,9 +274,8 @@ int main(int argc, char *argv[]) {
     case 2: {
       Game offlineGame = Game();
       string filePath;
-      cout << "Please enter the file path to load the game from: (default "
-              "is 'savegame.txt')"
-           << endl;
+      cout << "Load game from(default "
+              "is 'savegame.txt'): ";
       getline(cin, filePath);
       if (filePath.empty()) {
         filePath = "savegame.txt";
