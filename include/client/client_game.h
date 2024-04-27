@@ -58,7 +58,7 @@ public:
    */
   ClientGame();
 
-  ClientGame(string &ip);
+  ClientGame(const string &ip);
 
   ~ClientGame();
 

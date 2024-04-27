@@ -15,9 +15,10 @@
 #define KEY_DOWN 66
 #define ENTER_KEY 10
 
-using namespace std;
-
+const string DEFAULT_IP = "43.143.114.119";
 struct termios orig_termios;
+
+using namespace std;
 
 /**
  * @brief 禁用标准输入的缓冲区
@@ -186,11 +187,9 @@ int main(int argc, char *argv[]) {
   } else {
     cout << "Starting Online Game...\n";
     sleep(1); // Delay for demonstration purposes
-    string DEFAULT_IP = "43.143.114.119";
     // 匹配成功
     ClientGame battleshipGame = ClientGame(DEFAULT_IP);
     battleshipGame.start();
-
     cout << "Closing Game...\n";
     battleshipGame.stop();
   }

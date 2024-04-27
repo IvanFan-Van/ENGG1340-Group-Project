@@ -119,7 +119,7 @@ void ClientGame::playerMove() {
   }
 }
 
-ClientGame::ClientGame(string &ip) : gameStarted(false) {
+ClientGame::ClientGame(const string &ip) : gameStarted(false) {
   this->ip = ip;
   srand(time(0));
   this->playerBoard = Board();
