@@ -29,12 +29,13 @@ private:
    *
    * This function is called when it is the player's turn to make a move.
    */
-  void playerMove();
+  bool playerMove();
 
   /**
    * @brief Executes the computer's move.
    *
    * This function is called when it is the computer's turn to make a move.
+   * Changed into bool to responds the user entred ESC
    */
   void computerMove();
 

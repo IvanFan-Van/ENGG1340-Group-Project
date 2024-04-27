@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void GameLogic::placeShips(Board &board, Ship &ship) {
+bool GameLogic::placeShips(Board &board, Ship &ship) {
   int shipSize = ship.size;
   char key;
   bool placed = false;
@@ -62,14 +62,16 @@ void GameLogic::placeShips(Board &board, Ship &ship) {
         board.placeShip(ship);
       }
       break;
-    // case 'N': // 加了个中途退出功能，此处待定
-    //   placed = true;
-    //   break;
+    case 'N': // 加了个中途退出功能，此处待定
+      placed = true;
+      return false;
+      break;
     }
   }
+  return true;
 }
 
-void GameLogic::getMoveFromPlayer(Board playerBoard, Board opponentBoard,
+bool GameLogic::getMoveFromPlayer(Board playerBoard, Board opponentBoard,
                                   int &i, int &j) {
   bool placed = false;
   i = STARTPOINT, j = STARTPOINT;
@@ -107,9 +109,11 @@ void GameLogic::getMoveFromPlayer(Board playerBoard, Board opponentBoard,
           placed = true;
         }
         break;
-      // case 'N': // 加了个中途退出功能，此处待定
-      //   placed = true;
-      //   break;
+      case 'N': // 加了个中途退出功能，此处待定
+        placed = true;
+        return false;
+        break;
     }
   }
+  return true;
 }

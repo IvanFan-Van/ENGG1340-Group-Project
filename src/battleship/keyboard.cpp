@@ -45,6 +45,11 @@ char keyboard(){
 					key = 'd';
 					exit = true;
 					break;
+				case 'q'://moving to the right, denoted by 'd'
+				case 'Q':
+					key = 'N';
+					exit = true;
+					break;
 				case '\033':  // process the arrow keys
                     if (read(STDIN_FILENO, &key, 1) > 0 && key == '[') {
                         if (read(STDIN_FILENO, &key, 1) > 0) {

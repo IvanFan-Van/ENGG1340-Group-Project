@@ -31,10 +31,13 @@ void Game::placeShips(Board &board, bool isPlayer) {
   }
 }
 
-void Game::playerMove() {
+bool Game::playerMove() {
   int x = -1;
   int y = -1;
-  gameLogic.getMoveFromPlayer(playerBoard, computerBoard, x, y);
+  if(!gameLogic.getMoveFromPlayer(playerBoard, computerBoard, x, y)){
+    return false;
+    
+  }
 
   if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
     if (computerBoard.handleHit(x, y)) {
@@ -45,6 +48,7 @@ void Game::playerMove() {
   } else {
     cout << RED << "Invalid coordinates!\n" << RESET_COLOR;
   }
+  return true;
 }
 
 void Game::computerMove() {
@@ -74,14 +78,20 @@ Game::Game() : playerTurn(true) {
 Game::~Game() {}
 
 void Game::start() {
+  
   while (true) {
     if (playerTurn) {
-      playerMove();
+      if(!playerMove()){
+        break;
+        
+      }
       if (computerBoard.allShipsSunk()) {
         displayBoardsSideBySide(playerBoard, computerBoard, true, -1, -1, true);
         cout << YELLOW << "Congratulations! You win!\n" << RESET_COLOR;
         break;
       }
+      
+
     } else {
       computerMove();
       if (playerBoard.allShipsSunk()) {
