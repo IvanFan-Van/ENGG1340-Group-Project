@@ -6,6 +6,7 @@
 #include <limits>
 #include <sstream>
 #include <string>
+#include <sys/ioctl.h>
 #include <termios.h>
 #include <thread>
 #include <unistd.h>
@@ -38,7 +39,7 @@ void disableRawMode() { tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios); }
 /**
  * @brief 打印进度条
  */
-void printProgressBar(size_t current, size_t total) {
+void ProgressBar(size_t current, size_t total) {
   // 进度条的宽度
   int barWidth = 70;
 
@@ -47,6 +48,40 @@ void printProgressBar(size_t current, size_t total) {
 
   cout << "\r\033[K"; // 清空当前行
 
+  std::cout << "[";
+  int pos = static_cast<int>(barWidth * progress);
+  for (int i = 0; i < barWidth; ++i) {
+    if (i < pos)
+      std::cout << "=";
+    else if (i == pos)
+      std::cout << ">";
+    else
+      std::cout << " ";
+  }
+  std::cout << "] " << int(progress * 100.0) << " %" << std::flush;
+}
+
+void printProgressBar(size_t current, size_t total) {
+  // Progress bar width
+  int barWidth = 70;
+
+  // Calculate progress percentage
+  float progress = static_cast<float>(current) / total;
+
+  // Get terminal width
+  struct winsize w;
+  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+  int terminalWidth = w.ws_col;
+
+  // Calculate padding
+  int padding = (terminalWidth - barWidth) / 2;
+
+  cout << "\r\033[K"; // Clear current line
+
+  // Print padding
+  std::cout << std::string(padding, ' ');
+
+  // Print progress bar
   std::cout << "[";
   int pos = static_cast<int>(barWidth * progress);
   for (int i = 0; i < barWidth; ++i) {
@@ -74,10 +109,14 @@ void displayLogo() {
       )";
 
   // Split the art into lines
-  std::istringstream iss(art);
+  struct winsize w;
+  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+
+  std::istringstream artStream(art);
   std::vector<std::string> lines;
   std::string line;
-  while (std::getline(iss, line)) {
+  // 将LOGO分割成行
+  while (std::getline(artStream, line)) {
     lines.push_back(line);
   }
 
@@ -89,8 +128,18 @@ void displayLogo() {
     }
   }
 
+  // 逐行打印LOGO
+  int pos_x;
+  // Get terminal width
+  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+  int terminalWidth = w.ws_col;
+
   for (size_t col = 0; col <= max_length; ++col) {
     for (const auto &line : lines) {
+      // 计算光标位置
+      pos_x = (terminalWidth - line.length()) / 2;
+      // 移动光标
+      std::cout << "\033[" << pos_x << "C";
       std::cout << line.substr(0, col) << std::endl;
     }
 
@@ -114,15 +163,45 @@ void displayLogo() {
  * @brief 显示游戏菜单
  */
 void displayMenu(bool isComputerSelected) {
-  cout << "Select Game Mode:\n";
-  cout << (isComputerSelected ? YELLOW + "=> Computer <=" + RESET_COLOR
-                              : "  Computer  ")
-       << endl;
-  cout << (!isComputerSelected ? YELLOW + "=> Online <=" + RESET_COLOR
-                               : "  Online  ")
-       << endl;
+  /// cout << "Select Game Mode:\n";
+  // cout << (isComputerSelected ? YELLOW + "=> Computer <=" + RESET_COLOR
+  //                             : "  Computer  ")
+  //      << endl;
+  // cout << (!isComputerSelected ? YELLOW + "=> Online <=" + RESET_COLOR
+  //                              : "  Online  ")
+  //      << endl;
 
-  cout << "(Using the arrow keys to navigate, press Enter to select)\n";
+  // cout << "(Using the arrow keys to navigate, press Enter to select)\n";
+  // cout.flush();
+  struct winsize w;
+  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+
+  std::string line1 = "Select Game Mode:";
+  std::string line2 =
+      (isComputerSelected ? YELLOW + "=> Computer <=" + RESET_COLOR
+                          : "   Computer   ");
+  std::string line3 =
+      (!isComputerSelected ? YELLOW + "=> Online   <=" + RESET_COLOR
+                           : "   Online   ");
+  std::string line4 =
+      "(Using the arrow keys to navigate, press Enter to select)\n";
+
+  // Calculate padding and print each line
+  int padding1 = (w.ws_col / 2 - line1.length() / 2);
+  cout << "\033[" << padding1 << "C";
+  cout << line1 << endl;
+
+  int padding2 = (w.ws_col / 2 - strlen("=> Computer <=") / 2);
+  cout << "\033[" << padding2 << "C";
+  cout << line2 << endl;
+
+  int padding3 = (w.ws_col / 2 - strlen("=>  Online  <=") / 2);
+  cout << "\033[" << padding3 << "C";
+  cout << line3 << endl;
+
+  int padding4 = (w.ws_col / 2 - line4.length() / 2);
+  cout << "\033[" << padding4 << "C";
+  cout << line4 << endl;
   cout.flush();
 }
 
@@ -158,7 +237,7 @@ void chooseMode(bool &isComputerSelected) {
     } else if (c == ENTER_KEY) {
       break;
     }
-    clearLinesAbove(4);
+    clearLinesAbove(5);
     displayMenu(isComputerSelected);
   }
 }
@@ -166,6 +245,8 @@ void chooseMode(bool &isComputerSelected) {
 int main(int argc, char *argv[]) {
   // Disable standard input buffering
   enableRawMode();
+  // clear screen
+  clearScreen();
   // Display the logo
   displayLogo();
   // Default to computer mode
