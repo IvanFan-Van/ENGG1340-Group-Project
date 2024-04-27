@@ -39,27 +39,6 @@ void disableRawMode() { tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios); }
 /**
  * @brief 打印进度条
  */
-void ProgressBar(size_t current, size_t total) {
-  // 进度条的宽度
-  int barWidth = 70;
-
-  // 计算进度百分比
-  float progress = static_cast<float>(current) / total;
-
-  cout << "\r\033[K"; // 清空当前行
-
-  std::cout << "[";
-  int pos = static_cast<int>(barWidth * progress);
-  for (int i = 0; i < barWidth; ++i) {
-    if (i < pos)
-      std::cout << "=";
-    else if (i == pos)
-      std::cout << ">";
-    else
-      std::cout << " ";
-  }
-  std::cout << "] " << int(progress * 100.0) << " %" << std::flush;
-}
 
 void printProgressBar(size_t current, size_t total) {
   // Progress bar width
@@ -163,16 +142,6 @@ void displayLogo() {
  * @brief 显示游戏菜单
  */
 void displayMenu(bool isComputerSelected) {
-  /// cout << "Select Game Mode:\n";
-  // cout << (isComputerSelected ? YELLOW + "=> Computer <=" + RESET_COLOR
-  //                             : "  Computer  ")
-  //      << endl;
-  // cout << (!isComputerSelected ? YELLOW + "=> Online <=" + RESET_COLOR
-  //                              : "  Online  ")
-  //      << endl;
-
-  // cout << "(Using the arrow keys to navigate, press Enter to select)\n";
-  // cout.flush();
   struct winsize w;
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 
