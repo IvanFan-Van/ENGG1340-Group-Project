@@ -10,6 +10,8 @@
 #include <regex>
 #include <unistd.h>
 
+
+
 using namespace std;
 
 void Game::placeShips(Board &board, bool isPlayer) {
@@ -29,6 +31,15 @@ void Game::placeShips(Board &board, bool isPlayer) {
       }
     }
   }
+}
+
+void Game::GameLoad(){
+  
+}
+
+}
+void GameSave(){
+
 }
 
 bool Game::playerMove() {
@@ -67,6 +78,7 @@ void Game::computerMove() {
 Game::Game() : playerTurn(true) { srand(time(0)); }
 
 Game::~Game() {}
+
 
 void Game::start() {
   clearScreen();
