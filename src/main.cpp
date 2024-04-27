@@ -11,6 +11,7 @@
 #include <thread>
 #include <unistd.h>
 #include <vector>
+#include <fstream>
 
 #define KEY_UP 65
 #define KEY_DOWN 66
@@ -232,12 +233,23 @@ bool start() {
 
 int main(int argc, char *argv[]) {
   while (true) {
-    // Start the game
+    // Start the gameofstream fout;
+    ifstream fin;//这里读取存档
     if (start()) {
       cout << "Starting Game With Computer...\n";
       sleep(1); // Delay for demonstration purposes
       Game battleshipGame = Game();
+      ifstream fout;
+      fout.open("record_game.txt");//open the file that will read the user's boards.
       battleshipGame.start();
+      //这里存入存档
+      for(int i =0; i<BOARD_SIZE; i++){
+        for(int j =0; j<BOARD_SIZE; j++){
+          fout<<
+        }
+      }
+      
+
     } else {
       cout << "Starting Online Game...\n";
       sleep(1); // Delay for demonstration purposes
