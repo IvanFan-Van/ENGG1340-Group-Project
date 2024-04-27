@@ -4,14 +4,13 @@
 #include "common/color.h"
 #include "common/constants.h"
 #include "common/utilities.h"
+#include <fstream>
 #include <ios>
 #include <iostream>
 #include <limits>
 #include <regex>
-#include <unistd.h>
-#include <fstream>
 #include <sstream>
-
+#include <unistd.h>
 
 using namespace std;
 
@@ -34,52 +33,60 @@ void Game::placeShips(Board &board, bool isPlayer) {
   }
 }
 
-void Game::loadGame(string filepath){
+bool Game::loadGame(string filepath) {
+  cout << "Loading game...\n";
   ifstream fin;
   fin.open(filepath);
-  string line;
-  
-  istringstream line_stream(line);
-  for(int i = 0; i<BOARD_SIZE;++i){
-    for(int j =0; j<BOARD_SIZE;++j){
-      line_stream>>playerBoard.board[i][j];
-    }
+  stringstream buffer;
+  buffer << fin.rdbuf();
+  string content = buffer.str();
+
+  if (content.empty()) {
+    cout << RED << "File is empty! or Not exits!\n" << RESET_COLOR;
+    return false;
   }
-  istringstream line_stream(line);
-  for(int i = 0; i<BOARD_SIZE;++i){
-    for(int j =0; j<BOARD_SIZE;++j){
-      line_stream>>playerBoard.hits[i][j];
-    }
+
+  // find first continues \n position
+  size_t pos = content.find("\n\n");
+  if (pos == string::npos) {
+    cout << RED << "Invalid file format!\n" << RESET_COLOR;
+    return false;
   }
+
+  string serialized_player_board = content.substr(0, pos);
+  string serialized_computer_board = content.substr(pos + 2);
+
+  Board playerBoard = Board::deserialize(serialized_player_board);
+  this->playerBoard = playerBoard;
+
+  Board computerBoard = Board::deserialize(serialized_computer_board);
+  this->computerBoard = computerBoard;
+
   fin.close();
-  
+  this->initialized = true;
+  cout << "Game loaded successfully!\n";
+
+  return true;
 }
 
-
-void Game::saveGame(){
+void Game::saveGame() {
+  cout << "Saving game...\n";
   ofstream fout;
-  fout.open("Recorder.txt");
-  for(int i = 0; i<BOARD_SIZE;++i){
-    for(int j =0; j<BOARD_SIZE;++j){
-      fout<<playerBoard.board[i][j]<<" ";
-    }
-  }
-  fout<<"\n";
-  for(int i = 0; i<BOARD_SIZE;++i){
-    for(int j =0; j<BOARD_SIZE;++j){
-      fout<<playerBoard.hits[i][j]<<" ";
-    }
-  }
-  fout<<"\n";
+  fout.open("savegame.txt");
+  fout << playerBoard.serialize();
+
+  fout << "\n\n";
+  fout << computerBoard.serialize();
   fout.close();
+
+  cout << "Game saved successfully!\n";
 }
 
 bool Game::playerMove() {
   int x = -1;
   int y = -1;
-  if(!gameLogic.getMoveFromPlayer(playerBoard, computerBoard, x, y)){
+  if (!gameLogic.getMoveFromPlayer(playerBoard, computerBoard, x, y)) {
     return false;
-    
   }
 
   if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
@@ -99,42 +106,37 @@ void Game::computerMove() {
     Point p = playerBoard.getRandomPoint();
     if (!playerBoard.isHit(p.x, p.y)) {
       if (playerBoard.handleHit(p.x, p.y)) {
-        cout << "Computer's turn: Hit at " << char('A' + p.x) << p.y
-             << endl;
+        cout << "Computer's turn: Hit at " << char('A' + p.x) << p.y << endl;
       } else {
-        cout << "Computer's turn: Miss at " << char('A' + p.x) << p.y
-             << endl;
+        cout << "Computer's turn: Miss at " << char('A' + p.x) << p.y << endl;
       }
       break;
     }
   }
 }
 
-Game::Game() : playerTurn(true) {
-  srand(time(0));
-  clearScreen();
-  placeShips(playerBoard, true);
-  placeShips(computerBoard, false);
-  clearScreen();
-}
+Game::Game() : playerTurn(true), initialized(false) { srand(time(0)); }
 
 Game::~Game() {}
 
-
 void Game::start() {
-  
+  if (!initialized) {
+    clearScreen();
+    placeShips(playerBoard, true);
+    placeShips(computerBoard, false);
+    clearScreen();
+  }
+
   while (true) {
     if (playerTurn) {
-      if(!playerMove()){
+      if (!playerMove()) {
         break;
-        
       }
       if (computerBoard.allShipsSunk()) {
         displayBoardsSideBySide(playerBoard, computerBoard, true, -1, -1, true);
         cout << YELLOW << "Congratulations! You win!\n" << RESET_COLOR;
         break;
       }
-      
 
     } else {
       computerMove();

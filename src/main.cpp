@@ -2,6 +2,7 @@
 #include "client/client_game.h"
 #include "common/color.h"
 #include <chrono>
+#include <fstream>
 #include <iostream>
 #include <limits>
 #include <sstream>
@@ -11,7 +12,6 @@
 #include <thread>
 #include <unistd.h>
 #include <vector>
-#include <fstream>
 
 #define KEY_UP 65
 #define KEY_DOWN 66
@@ -148,8 +148,8 @@ void displayMenu(int selectedOption) {
       "(Using the arrow keys to navigate, press Enter to select)\n";
 
   for (size_t i = 0; i < options.size(); ++i) {
-    string optionLine =
-        (i == selectedOption ? YELLOW + "=> " + options[i] + " <=" + RESET_COLOR
+    string optionLine = ((int)i == selectedOption
+                             ? YELLOW + "=> " + options[i] + " <=" + RESET_COLOR
                              : "   " + options[i] + "   ");
     int padding = (terminalWidth - strlen("=> Computer <=")) / 2;
     cout << string(padding, ' ') << optionLine << endl;
@@ -254,6 +254,7 @@ int main(int argc, char *argv[]) {
       sleep(1); // Delay for demonstration purposes
       Game offlineGame = Game();
       offlineGame.start();
+      cout << "Exit game\n";
       offlineGame.saveGame();
 
       break;
@@ -280,8 +281,12 @@ int main(int argc, char *argv[]) {
       if (filePath.empty()) {
         filePath = "savegame.txt";
       }
-      offlineGame.loadGame(filePath);
-
+      bool success = offlineGame.loadGame(filePath);
+      if (!success) {
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        break;
+      }
+      offlineGame.start();
       break;
     }
     case 3: {
