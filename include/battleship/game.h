@@ -54,6 +54,10 @@ public:
    * ships, and executing the turns until the game is over.
    */
   void start();
+
+  void saveGame(){};
+
+  void loadGame(string &filePath){};
 };
 
 #endif // BATTLESHIP_GAME_H
