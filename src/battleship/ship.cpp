@@ -26,7 +26,7 @@ string Ship::serialize() {
     oss << cell.serialize() << "\n";
   }
   return oss.str();
-};
+}
 
 // 反序列化
 Ship Ship::deserialize(const string &data) {
@@ -41,7 +41,7 @@ Ship Ship::deserialize(const string &data) {
     ship.addCell(Point::deserialize(cellData));
   }
   return ship;
-};
+}
 
 ostream &operator<<(ostream &os, const Ship &ship) {
   os << "Size: " << ship.size << ", Hits: " << ship.hits

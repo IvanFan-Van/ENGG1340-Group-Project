@@ -9,8 +9,7 @@ using namespace std;
 class Game {
 private:
   Board playerBoard; // The board representing the player's ships and attacks.
-  Board
-      computerBoard; // The board representing the computer's ships and attacks.
+  Board computerBoard; // The board representing the computer's ships and attacks.
   bool playerTurn;   // A flag indicating whether it is the player's turn.
   GameLogic gameLogic; // An instance of the GameLogic class.
   /**
@@ -29,6 +28,16 @@ private:
    *
    * This function is called when it is the player's turn to make a move.
    */
+  void GameLoad(string filepath);
+  /**
+   * @brief Load the recoreded game in a file.
+   * 
+  */
+  void GameSave();
+  /**
+   * @brief Save the current game when quit.
+  */
+
   bool playerMove();
 
   /**
@@ -54,6 +63,10 @@ public:
    * ships, and executing the turns until the game is over.
    */
   void start();
+
+  void saveGame(){};
+
+  void loadGame(string &filePath){};
 };
 
 #endif // BATTLESHIP_GAME_H

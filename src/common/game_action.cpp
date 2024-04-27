@@ -1,10 +1,10 @@
 #include "common/game_action.h"
 
-GameAction::GameAction(ActionType t, const string &d) : type(t), data(d){};
+GameAction::GameAction(ActionType t, const string &d) : type(t), data(d){}
 
-GameAction::GameAction(ActionType t) : type(t){};
+GameAction::GameAction(ActionType t) : type(t){}
 
-GameAction::GameAction(){};
+GameAction::GameAction(){}
 
 string GameAction::serialize() const {
   ostringstream oss;

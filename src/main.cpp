@@ -11,6 +11,7 @@
 #include <thread>
 #include <unistd.h>
 #include <vector>
+#include <fstream>
 
 #define KEY_UP 65
 #define KEY_DOWN 66
@@ -19,6 +20,17 @@
 using namespace std;
 
 struct termios orig_termios;
+vector<string> options = {
+    "Computer", "Online", "Continue", "Help", "Exit",
+};
+const int NUM_OPTIONS = options.size();
+
+// 获取终端的宽度
+int getTerminalWidth() {
+  struct winsize w;
+  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+  return w.ws_col;
+}
 
 /**
  * @brief 禁用标准输入的缓冲区
@@ -48,9 +60,7 @@ void printProgressBar(size_t current, size_t total) {
   float progress = static_cast<float>(current) / total;
 
   // Get terminal width
-  struct winsize w;
-  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-  int terminalWidth = w.ws_col;
+  int terminalWidth = getTerminalWidth();
 
   // Calculate padding
   int padding = (terminalWidth - barWidth) / 2;
@@ -88,9 +98,6 @@ void displayLogo() {
       )";
 
   // Split the art into lines
-  struct winsize w;
-  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-
   std::istringstream artStream(art);
   std::vector<std::string> lines;
   std::string line;
@@ -108,18 +115,10 @@ void displayLogo() {
   }
 
   // 逐行打印LOGO
-  int pos_x;
-  // Get terminal width
-  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-  int terminalWidth = w.ws_col;
-
+  int terminalWidth = getTerminalWidth();
   for (size_t col = 0; col <= max_length; ++col) {
     for (const auto &line : lines) {
-      // 计算光标位置
-      pos_x = (terminalWidth - line.length()) / 2;
-      // 移动光标
-      std::cout << "\033[" << pos_x << "C";
-      std::cout << line.substr(0, col) << std::endl;
+      printCentered(line.substr(0, col), terminalWidth);
     }
 
     // Print the progress bar at the bottom.
@@ -141,36 +140,25 @@ void displayLogo() {
 /**
  * @brief 显示游戏菜单
  */
-void displayMenu(bool isComputerSelected) {
-  struct winsize w;
-  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+void displayMenu(int selectedOption) {
+  int terminalWidth = getTerminalWidth();
 
-  std::string line1 = "Select Game Mode:";
-  std::string line2 =
-      (isComputerSelected ? YELLOW + "=> Computer <=" + RESET_COLOR
-                          : "   Computer   ");
-  std::string line3 =
-      (!isComputerSelected ? YELLOW + "=> Online   <=" + RESET_COLOR
-                           : "   Online   ");
+  std::string line1 = "Select Option:";
   std::string line4 =
       "(Using the arrow keys to navigate, press Enter to select)\n";
 
-  // Calculate padding and print each line
-  int padding1 = (w.ws_col / 2 - line1.length() / 2);
-  cout << "\033[" << padding1 << "C";
-  cout << line1 << endl;
+  for (size_t i = 0; i < options.size(); ++i) {
+    string optionLine =
+        (i == selectedOption ? YELLOW + "=> " + options[i] + " <=" + RESET_COLOR
+                             : "   " + options[i] + "   ");
+    int padding = (terminalWidth - strlen("=> Computer <=")) / 2;
+    cout << string(padding, ' ') << optionLine << endl;
+  }
 
-  int padding2 = (w.ws_col / 2 - strlen("=> Computer <=") / 2);
-  cout << "\033[" << padding2 << "C";
-  cout << line2 << endl;
+  // Calculate padding and print the instruction line
+  int padding4 = (terminalWidth - line4.length()) / 2;
+  cout << string(padding4, ' ') << line4 << endl;
 
-  int padding3 = (w.ws_col / 2 - strlen("=>  Online  <=") / 2);
-  cout << "\033[" << padding3 << "C";
-  cout << line3 << endl;
-
-  int padding4 = (w.ws_col / 2 - line4.length() / 2);
-  cout << "\033[" << padding4 << "C";
-  cout << line4 << endl;
   cout.flush();
 }
 
@@ -189,7 +177,8 @@ void clearLinesAbove(int numLines) {
 /**
  * @brief 选择游戏模式
  */
-void chooseMode(bool &isComputerSelected) {
+void chooseMode(int &selectedOption) {
+
   while (true) {
     char c;
     if (read(STDIN_FILENO, &c, 1) == -1) {
@@ -200,18 +189,42 @@ void chooseMode(bool &isComputerSelected) {
     if (c == '\033') { // Arrow keys are preceded by an escape sequence \033[
       read(STDIN_FILENO, &c, 1); // Skip the [
       read(STDIN_FILENO, &c, 1);
-      if (c == KEY_UP || c == KEY_DOWN) {
-        isComputerSelected = !isComputerSelected; // Toggle the selection
+      if (c == KEY_UP) {
+        if (selectedOption > 0) {
+          selectedOption--;
+        } else {
+          selectedOption = NUM_OPTIONS - 1;
+        }
+      }
+    } else if (c == KEY_DOWN) {
+      if (selectedOption < NUM_OPTIONS - 1) {
+        selectedOption++;
+      } else {
+        selectedOption = 0;
+      }
+    } else if (c == ENTER_KEY) {
+      break;
+    } else if (c == 'w') {
+      if (selectedOption > 0) {
+        selectedOption--;
+      } else {
+        selectedOption = NUM_OPTIONS - 1;
+      }
+    } else if (c == 's') {
+      if (selectedOption < NUM_OPTIONS - 1) {
+        selectedOption++;
+      } else {
+        selectedOption = 0;
       }
     } else if (c == ENTER_KEY) {
       break;
     }
-    clearLinesAbove(5);
-    displayMenu(isComputerSelected);
+    clearLinesAbove(NUM_OPTIONS + 2);
+    displayMenu(selectedOption);
   }
 }
 
-bool start() {
+int start() {
   // Disable standard input buffering
   enableRawMode();
   // clear screen
@@ -219,36 +232,73 @@ bool start() {
   // Display the logo
   displayLogo();
   // Default to computer mode
-  bool isComputerSelected = true;
+  int selectedOption = 0;
   // Display the menu
-  displayMenu(isComputerSelected);
+  displayMenu(selectedOption);
   // choose game mode
-  chooseMode(isComputerSelected);
+  chooseMode(selectedOption);
   // Restore terminal settings
   disableRawMode();
 
-  return isComputerSelected;
+  return selectedOption;
 }
 
 int main(int argc, char *argv[]) {
   while (true) {
     // Start the game
-    if (start()) {
-      cout << "Starting Game With Computer...\n";
+    int option = start();
+    cout << "option: " << option << endl;
+    switch (option) {
+    case 0: {
+      printCentered("Starting Game With Computer...", getTerminalWidth());
       sleep(1); // Delay for demonstration purposes
-      Game battleshipGame = Game();
-      battleshipGame.start();
-    } else {
-      cout << "Starting Online Game...\n";
+      Game offlineGame = Game();
+      offlineGame.start();
+      offlineGame.saveGame();
+
+      break;
+    }
+    case 1: {
+      printCentered("Starting Game With People...", getTerminalWidth());
       sleep(1); // Delay for demonstration purposes
       string DEFAULT_IP = "43.143.114.119";
       // 匹配成功
-      ClientGame battleshipGame = ClientGame(DEFAULT_IP);
-      battleshipGame.start();
+      ClientGame onlineGame = ClientGame(DEFAULT_IP);
+      onlineGame.start();
 
       cout << "Closing Game...\n";
-      battleshipGame.stop();
+      onlineGame.stop();
+      break;
     }
+    case 2: {
+      Game offlineGame = Game();
+      string filePath;
+      cout << "Please enter the file path to load the game from: (default "
+              "is 'savegame.txt')"
+           << endl;
+      getline(cin, filePath);
+      if (filePath.empty()) {
+        filePath = "savegame.txt";
+      }
+      offlineGame.loadGame(filePath);
+
+      break;
+    }
+    case 3: {
+      cout << "展示文档";
+      cout << "按任意键继续";
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+      break;
+    }
+    case 4: {
+      cout << "Thank You for Playing Battleship!\n";
+      return 0;
+    }
+    default: {
+      cout << "Invalid Option\n";
+    }
+    }
+
     sleep(1);
   }
 
