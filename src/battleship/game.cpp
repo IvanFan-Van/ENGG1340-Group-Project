@@ -135,6 +135,8 @@ void Game::start() {
       if (computerBoard.allShipsSunk()) {
         displayBoardsSideBySide(playerBoard, computerBoard, true, -1, -1, true);
         cout << YELLOW << "Congratulations! You win!\n" << RESET_COLOR;
+        cout << "Enter any key to continue...";
+        cin.get();
         break;
       }
 
@@ -143,6 +145,8 @@ void Game::start() {
       if (playerBoard.allShipsSunk()) {
         displayBoardsSideBySide(playerBoard, computerBoard, true, -1, -1, true);
         cout << RED << "Sorry, computer wins!\n" << RESET_COLOR;
+        cout << "Enter any key to continue...";
+        cin.get();
         break;
       }
     }

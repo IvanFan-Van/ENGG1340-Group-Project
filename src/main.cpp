@@ -21,7 +21,7 @@ using namespace std;
 
 struct termios orig_termios;
 vector<string> options = {
-    "Computer", "Online", "Continue", "Help", "Exit",
+    "Computer", "Online", "Continue", "Tutorial", "Exit",
 };
 const int NUM_OPTIONS = options.size();
 
@@ -289,7 +289,31 @@ int main(int argc, char *argv[]) {
       break;
     }
     case 3: {
-      cout << "展示文档";
+      clearScreen();
+      const string title = R"(
+            
+        _______ _    _ _______ ____  _____  _____          _      
+       |__   __| |  | |__   __/ __ \|  __ \|_   _|   /\   | |     
+          | |  | |  | |  | | | |  | | |__) | | |    /  \  | |     
+          | |  | |  | |  | | | |  | |  _  /  | |   / /\ \ | |     
+          | |  | |__| |  | | | |__| | | \ \ _| |_ / ____ \| |____ 
+          |_|   \____/   |_|  \____/|_|  \_\_____/_/    \_\______|
+                                                                  
+                                                                  
+      )";
+      printCentered(title, getTerminalWidth());
+
+      const string text = R"(
+        Game Rules:
+        1.  Each player has a fleet of ships placed on a 10x10 grid.
+        2.  The ships include an aircraft carrier (5 cells), battleship (4 cells), cruiser (3 cells), submarine (3 cells), and destroyer (2 cells).
+        3.  Players take turns guessing the coordinates to target their opponent's ships.
+        4.  The grid is marked with hits ('X') and misses ('O') to keep track of the shots.
+        5.  When all cells of a ship are hit, it is considered sunk.
+        6.  The first player to sink all of their opponent's ships wins the game.
+      )";
+      printCentered(text, getTerminalWidth());
+      cout << "\n\n";
       cout << "按任意键继续";
       cin.ignore(numeric_limits<streamsize>::max(), '\n');
       break;
@@ -302,8 +326,6 @@ int main(int argc, char *argv[]) {
       cout << "Invalid Option\n";
     }
     }
-
-    sleep(1);
   }
 
   return 0;
