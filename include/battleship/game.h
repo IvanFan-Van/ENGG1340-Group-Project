@@ -28,12 +28,12 @@ private:
    *
    * This function is called when it is the player's turn to make a move.
    */
-  void GameLoad(string filepath);
+  void loadGame(string filepath);
   /**
    * @brief Load the recoreded game in a file.
    * 
   */
-  void GameSave();
+  void saveGame();
   /**
    * @brief Save the current game when quit.
   */
@@ -63,10 +63,6 @@ public:
    * ships, and executing the turns until the game is over.
    */
   void start();
-
-  void saveGame(){};
-
-  void loadGame(string &filePath){};
 };
 
 #endif // BATTLESHIP_GAME_H

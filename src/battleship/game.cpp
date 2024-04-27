@@ -9,7 +9,8 @@
 #include <limits>
 #include <regex>
 #include <unistd.h>
-
+#include <fstream>
+#include <sstream>
 
 
 using namespace std;
@@ -33,20 +34,52 @@ void Game::placeShips(Board &board, bool isPlayer) {
   }
 }
 
-void Game::GameLoad(){
+void Game::loadGame(string filepath){
+  ifstream fin;
+  fin.open(filepath);
+  string line;
+  
+  istringstream line_stream(line);
+  for(int i = 0; i<BOARD_SIZE;++i){
+    for(int j =0; j<BOARD_SIZE;++j){
+      line_stream>>playerBoard.board[i][j];
+    }
+  }
+  istringstream line_stream(line);
+  for(int i = 0; i<BOARD_SIZE;++i){
+    for(int j =0; j<BOARD_SIZE;++j){
+      line_stream>>playerBoard.hits[i][j];
+    }
+  }
+  fin.close();
   
 }
 
-}
-void GameSave(){
 
+void Game::saveGame(){
+  ofstream fout;
+  fout.open("Recorder.txt");
+  for(int i = 0; i<BOARD_SIZE;++i){
+    for(int j =0; j<BOARD_SIZE;++j){
+      fout<<playerBoard.board[i][j]<<" ";
+    }
+  }
+  fout<<"\n";
+  for(int i = 0; i<BOARD_SIZE;++i){
+    for(int j =0; j<BOARD_SIZE;++j){
+      fout<<playerBoard.hits[i][j]<<" ";
+    }
+  }
+  fout<<"\n";
+  fout.close();
 }
 
 bool Game::playerMove() {
   int x = -1;
   int y = -1;
-  if (!gameLogic.getMoveFromPlayer(playerBoard, computerBoard, x, y)) {
+  if(!gameLogic.getMoveFromPlayer(playerBoard, computerBoard, x, y)){
     return false;
+    
   }
 
   if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE) {
@@ -66,38 +99,42 @@ void Game::computerMove() {
     Point p = playerBoard.getRandomPoint();
     if (!playerBoard.isHit(p.x, p.y)) {
       if (playerBoard.handleHit(p.x, p.y)) {
-        cout << "Computer's turn: Hit at " << char('A' + p.x) << p.y << endl;
+        cout << "Computer's turn: Hit at " << char('A' + p.x) << p.y
+             << endl;
       } else {
-        cout << "Computer's turn: Miss at " << char('A' + p.x) << p.y << endl;
+        cout << "Computer's turn: Miss at " << char('A' + p.x) << p.y
+             << endl;
       }
       break;
     }
   }
 }
 
-Game::Game() : playerTurn(true) { srand(time(0)); }
+Game::Game() : playerTurn(true) {
+  srand(time(0));
+  clearScreen();
+  placeShips(playerBoard, true);
+  placeShips(computerBoard, false);
+  clearScreen();
+}
 
 Game::~Game() {}
 
 
 void Game::start() {
-  clearScreen();
-  placeShips(playerBoard, true);
-  placeShips(computerBoard, false);
-  clearScreen();
+  
   while (true) {
     if (playerTurn) {
-      // 用户退出按q或esc退出游戏
-      if (!playerMove()) {
-        cout << "Exit the game\n";
-        cout << "Goodbye!\n";
+      if(!playerMove()){
         break;
+        
       }
       if (computerBoard.allShipsSunk()) {
         displayBoardsSideBySide(playerBoard, computerBoard, true, -1, -1, true);
         cout << YELLOW << "Congratulations! You win!\n" << RESET_COLOR;
         break;
       }
+      
 
     } else {
       computerMove();
