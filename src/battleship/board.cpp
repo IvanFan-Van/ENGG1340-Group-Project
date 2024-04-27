@@ -218,7 +218,7 @@ void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
        << " to change its orientation. \nNote: upperleft corner will be "
           "fixed during rotation."
        << endl << endl;
-  cout << "When the ship is" << RED << " red" << RESET_COLOR
+  cout << "When the ship is" << RED_BG << " red" << RESET_COLOR
        << ", it is an invalid placement." << endl;
   cout << "When it is " << BOLD << GREEN << "green" << RESET_COLOR
        << ", it is valid!" << endl;
