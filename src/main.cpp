@@ -310,7 +310,7 @@ int main(int argc, char *argv[]) {
             - three cruisers (2 units), 
             - four submarines (1 unit).
         3.  Players take turns guessing the coordinates to target their opponent's ships.
-        4.  The grid is marked with hits ('X') and misses ('O') to keep track of the shots.
+        4.  The grid is marked with hits ('X') and misses ('O') to record the shots.
         5.  When all cells of a ship are hit, it is considered sunk.
         6.  The first player to sink all of their opponent's ships wins the game.
       )";
