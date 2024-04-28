@@ -25,4 +25,4 @@ Controls:
 1.  Entering the game, content will pop up and the player needs to choose the game mode. Using the arrow keys to navigate the mode, press Enter to select.
 2.  If you select Man-Machine mode, skip to Step 3. If the player battle mode is selected, both players need to enter the same room number (eg.1111) to enter the same room to play the battle game.
 3.  Players should use the "WASD" or arrow keys on the keyboard to move your ships and press the [ spacebar ] to change ship's orientation.Finally press the Enter key to place these ships(Note: upperleft corner will be fixed during rotation.)
-4.  After placing the ship, the game begins and the player enters coordinates in a "row column" format to select the location of the strike (e.g. "A5"). The game provides instructions and hints for each player's turn.
+4.  After placing the ship, the game begins and the player uses the "WASD" on the keyboard to select the location of the attack and the "ENTER" key to strike.
