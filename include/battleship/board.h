@@ -47,7 +47,8 @@ public:
 
   Point getRandomPoint();
 
-  void DisplayColorPlacement(int x, int y, int size, bool isVertical);
+  void DisplayColorPlacement(int x, int y, int size, bool isVertical,
+                             int remaining);
 
   // 序列化
   string serialize();

@@ -14,38 +14,43 @@ bool GameLogic::placeShips(Board &board, Ship &ship) {
   int x = prev_x == -1 ? STARTPOINT : prev_x;
   int y = prev_y == -1 ? STARTPOINT : prev_y;
   bool isVertical = true;
-  board.DisplayColorPlacement(x, y, shipSize, isVertical);
+
+  static int ships_remain = 0;
+  if (ships_remain == 0) {
+    ships_remain = 5 - ship.size;
+  }
+  board.DisplayColorPlacement(x, y, shipSize, isVertical, ships_remain);
   while (!placed) {
     key = keyboard();
     switch (key) {
     case 'w':
       if (x > 0) {
         x -= 1;
-        board.DisplayColorPlacement(x, y, shipSize, isVertical);
+        board.DisplayColorPlacement(x, y, shipSize, isVertical, ships_remain);
       }
       break;
     case 'a':
       if (y > 0) {
         y -= 1;
-        board.DisplayColorPlacement(x, y, shipSize, isVertical);
+        board.DisplayColorPlacement(x, y, shipSize, isVertical, ships_remain);
       }
       break;
     case 's':
       if (x < BOARD_SIZE - (isVertical ? shipSize : 1)) {
         x += 1;
-        board.DisplayColorPlacement(x, y, shipSize, isVertical);
+        board.DisplayColorPlacement(x, y, shipSize, isVertical, ships_remain);
       }
       break;
     case 'd':
       if (y < BOARD_SIZE - (isVertical ? 1 : shipSize)) {
         y += 1;
-        board.DisplayColorPlacement(x, y, shipSize, isVertical);
+        board.DisplayColorPlacement(x, y, shipSize, isVertical, ships_remain);
       }
       break;
     case 'C': // change orientation
       if ((isVertical ? y : x) + shipSize <= BOARD_SIZE) {
         isVertical = !isVertical;
-        board.DisplayColorPlacement(x, y, shipSize, isVertical);
+        board.DisplayColorPlacement(x, y, shipSize, isVertical, ships_remain);
       }
       break;
     case 'Y': // choice made
@@ -66,6 +71,9 @@ bool GameLogic::placeShips(Board &board, Ship &ship) {
         // 更新之前的x, y坐标
         prev_x = x;
         prev_y = y;
+
+        // 更新剩余船只数
+        ships_remain--;
       }
       break;
     case 'N': // 加了个中途退出功能，此处待定
