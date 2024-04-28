@@ -195,15 +195,13 @@ void chooseMode(int &selectedOption) {
         } else {
           selectedOption = NUM_OPTIONS - 1;
         }
+      } else if (c == KEY_DOWN) {
+        if (selectedOption < NUM_OPTIONS - 1) {
+          selectedOption++;
+        } else {
+          selectedOption = 0;
+        }
       }
-    } else if (c == KEY_DOWN) {
-      if (selectedOption < NUM_OPTIONS - 1) {
-        selectedOption++;
-      } else {
-        selectedOption = 0;
-      }
-    } else if (c == ENTER_KEY) {
-      break;
     } else if (c == 'w') {
       if (selectedOption > 0) {
         selectedOption--;
@@ -314,7 +312,7 @@ int main(int argc, char *argv[]) {
       )";
       printCentered(text, getTerminalWidth());
       cout << "\n\n";
-      cout << "按任意键继续";
+      cout << "Enter any key to continue...";
       cin.ignore(numeric_limits<streamsize>::max(), '\n');
       break;
     }
