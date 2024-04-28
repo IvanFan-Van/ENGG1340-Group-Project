@@ -313,6 +313,16 @@ int main(int argc, char *argv[]) {
         4.  The grid is marked with hits ('X') and misses ('O') to record the shots.
         5.  When all cells of a ship are hit, it is considered sunk.
         6.  The first player to sink all of their opponent's ships wins the game.
+
+        Implementation:
+        1.  First, place your own ships.
+              Use "WASD" or arrow keys to navigate the board, 
+              press the [  spacebar  ] to rotate the ship (with the upperleft corner fixed),
+              and press ENTER to select.
+
+        2.  Then, start attacking. You'll see your board on the left with the opponent's on the right.
+              Use "WASD" or arrow keys to navigate the board,
+              and press ENTER to select.
       )";
       printCentered(text, getTerminalWidth());
       cout << "\n\n";
