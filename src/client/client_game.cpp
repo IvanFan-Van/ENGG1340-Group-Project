@@ -187,21 +187,6 @@ void ClientGame::handleLost() {
 
 void ClientGame::handleMessage(const string &rawMessage) {
   string message = trim(rawMessage);
-
-  // cout << "Received message: " << message << endl;
-
-  // 打印16进制字符做检测
-  // for (unsigned char c : message)
-  // {
-  //     cout << hex << static_cast<int>(c) << ' ';
-  // }
-  // cout << endl;
-
-  // for (unsigned char c : "Your turn")
-  // {
-  //     cout << hex << static_cast<int>(c) << ' ';
-  // }
-  // cout << endl;
   if (message == "Your turn") {
     cout << "Your turn.\n";
     playerMove();
@@ -226,6 +211,11 @@ void ClientGame::start() {
   cout << "Enter Match Code: ";
   string buffer;
   getline(cin, buffer);
+  while (!regex_match(buffer, regex("\\d{4}"))) {
+    cout << RED << "Invalid match code. Please enter a 4-digit number: "
+         << RESET_COLOR;
+    getline(cin, buffer);
+  }
   if (!client.send(buffer)) {
     cout << "send failed\n";
     stop();
