@@ -253,7 +253,7 @@ int main(int argc, char *argv[]) {
       Game offlineGame = Game();
       offlineGame.start();
       cout << "Exit game\n";
-      offlineGame.saveGame();
+      // offlineGame.saveGame();
 
       break;
     }

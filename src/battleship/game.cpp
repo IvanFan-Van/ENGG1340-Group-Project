@@ -80,6 +80,9 @@ void Game::saveGame() {
   fout.close();
 
   cout << "Game saved successfully!\n";
+  cout << "Enter any key to continue...";
+  cout.flush();
+  cin.get();
 }
 
 bool Game::playerMove() {
@@ -130,7 +133,8 @@ void Game::start() {
   while (true) {
     if (playerTurn) {
       if (!playerMove()) {
-        break;
+        saveGame(); // 中途退出游戏，保存游戏存档
+        return;
       }
       if (computerBoard.allShipsSunk()) {
         displayBoardsSideBySide(playerBoard, computerBoard, true, -1, -1, true);
@@ -152,4 +156,6 @@ void Game::start() {
     }
     playerTurn = !playerTurn;
   }
+
+  saveGame(); // 保存游戏结局
 }
