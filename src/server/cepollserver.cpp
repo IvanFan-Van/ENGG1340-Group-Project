@@ -10,12 +10,77 @@
 #include <unordered_map>
 
 using namespace std;
+// 构造器
+CEpollServer::CEpollServer() : server_fd(-1), epoll_fd(-1), events(nullptr) {}
+CEpollServer::~CEpollServer() { stop(); }
 
-// Create server socket
+// 生命周期函数
+bool CEpollServer::start(const string &ip, int port, int max_events) {
+  this->max_events = max_events;
+  // Create server socket and epoll instance
+  if (!createServerSocket(ip, port) || !createEpollInstance()) {
+    cout << "Failed to create server socket or create epoll instance" << endl;
+    return false;
+  }
+  events = new epoll_event[max_events];
+  return true;
+}
+
+void CEpollServer::run() {
+  while (true) {
+    int nfds = epoll_wait(epoll_fd, events, max_events,
+                          -1); // Wait for events to occur
+    if (nfds == -1) {
+      cout << "epoll_wait failed" << endl;
+      break;
+    }
+    for (int i = 0; i < nfds; i++) {
+      if (events[i].data.fd == server_fd) {
+        cout << "New client connection" << endl;
+        handleNewConnection(); // Handle new client connection
+      } else {
+        cout << "Client message received" << endl;
+        handleClientMessage(events[i].data.fd); // Handle client message
+      }
+    }
+  }
+
+  stop();
+}
+
+void CEpollServer::stop() {
+  if (server_fd != -1) {
+    closeFd(server_fd); // Close server socket
+    server_fd = -1;
+  }
+  if (epoll_fd != -1) {
+    closeFd(epoll_fd); // Close epoll instance
+    epoll_fd = -1;
+  }
+  if (events != nullptr) {
+    delete[] events; // Deallocate events array
+    events = nullptr;
+  }
+}
+
+// 设置回调函数
+void CEpollServer::setOnClientConnected(function<void(int)> callback) {
+  onClientConnected = callback; // Set callback for client connection event
+}
+void CEpollServer::setOnClientDisconnected(function<void(int)> callback) {
+  onClientDisconnected =
+      callback; // Set callback for client disconnection event
+}
+void CEpollServer::setOnMessageReceived(
+    function<void(int, void *buffer, int bytes)> callback) {
+  onMessageReceived = callback; // Set callback for message received event
+}
+
+// 创建服务器套接字
 bool CEpollServer::createServerSocket(const string &ip, int port) {
   server_fd = socket(AF_INET, SOCK_STREAM, 0); // Create TCP socket
   if (server_fd == -1) {
-    cout << "Failed to create server socket" << endl;
+    perror("Failed to create server socket"); // Print error message
     return false;
   }
 
@@ -41,9 +106,9 @@ bool CEpollServer::createServerSocket(const string &ip, int port) {
   }
 
   // Listen for incoming connections
-  if (listen(server_fd, SOMAXCONN) ==
-      -1) { // SOMAXCONN is a global variable that defines the maximum length
-            // for the queue of pending connections, default is 128
+  // SOMAXCONN is a global variable that defines the maximum length
+  if (listen(server_fd, SOMAXCONN) == -1) {
+    // for the queue of pending connections, default is 128
     cout << "Failed to listen on server socket" << endl;
     return false;
   }
@@ -59,11 +124,7 @@ bool CEpollServer::createEpollInstance() {
     return false;
   }
   // Add server socket to epoll instance
-  if (!addFdToEpoll(server_fd, EPOLLIN)) {
-    cout << "Failed to add server socket to epoll instance" << endl;
-    return false;
-  }
-  return true;
+  return addFdToEpoll(server_fd, EPOLLIN);
 }
 
 // Add file descriptor to epoll instance
@@ -134,69 +195,6 @@ void CEpollServer::closeFd(int fd) {
   close(fd);
 }
 
-CEpollServer::CEpollServer() : server_fd(-1), epoll_fd(-1), events(nullptr) {}
-CEpollServer::~CEpollServer() { stop(); }
-
-bool CEpollServer::start(const string &ip, int port, int max_events) {
-  this->max_events = max_events;
-  // Create server socket and epoll instance
-  if (!createServerSocket(ip, port) || !createEpollInstance()) {
-    cout << "Failed to create server socket or create epoll instance" << endl;
-    return false;
-  }
-  events = new epoll_event[max_events];
-  return true;
-}
-
-void CEpollServer::run() {
-  while (true) {
-    int nfds = epoll_wait(epoll_fd, events, max_events,
-                          -1); // Wait for events to occur
-    if (nfds == -1) {
-      cout << "epoll_wait failed" << endl;
-      break;
-    }
-    for (int i = 0; i < nfds; i++) {
-      if (events[i].data.fd == server_fd) {
-        cout << "New client connection" << endl;
-        handleNewConnection(); // Handle new client connection
-      } else {
-        cout << "Client message received" << endl;
-        handleClientMessage(events[i].data.fd); // Handle client message
-      }
-    }
-  }
-
-  stop();
-}
-
-void CEpollServer::stop() {
-  if (server_fd != -1) {
-    closeFd(server_fd); // Close server socket
-    server_fd = -1;
-  }
-  if (epoll_fd != -1) {
-    closeFd(epoll_fd); // Close epoll instance
-    epoll_fd = -1;
-  }
-  if (events != nullptr) {
-    delete[] events; // Deallocate events array
-    events = nullptr;
-  }
-}
-
 void CEpollServer::removeFd(int fd) {
   epoll_ctl(this->epoll_fd, EPOLL_CTL_DEL, fd, NULL);
-}
-
-void CEpollServer::setOnClientConnected(function<void(int)> callback) {
-  onClientConnected = callback; // Set callback for client connection event
-}
-void CEpollServer::setOnClientDisconnected(function<void(int)> callback) {
-  onClientDisconnected =
-      callback; // Set callback for client disconnection event
-}
-void CEpollServer::setOnMessageReceived(
-    function<void(int, void *buffer, int bytes)> callback) {
-  onMessageReceived = callback; // Set callback for message received event
 }

@@ -15,12 +15,13 @@ public:
   /**
    * @brief Place ships on the board
    */
-  void placeShips(Board &board, Ship &ship);
+  bool placeShips(Board &board, Ship &ship);
 
   /**
    * @brief Get move from the player
+   * return bool value to indecate whether a ESC is entred to quit the game.
    */
-  void getMoveFromPlayer(Board playerBoard, Board opponentBoard, int &x,
+  bool getMoveFromPlayer(Board playerBoard, Board opponentBoard, int &x,
                          int &y);
 };
 

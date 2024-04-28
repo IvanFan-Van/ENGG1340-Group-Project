@@ -93,15 +93,20 @@ void Board::placeShip(Ship &ship) {
 }
 
 void Board::placeShip(int x, int y, int size, bool isVertical) {
+  Ship ship(size);
+  ship.isVertical = isVertical;
   if (isVertical) {
     for (int i = x; i < x + size; ++i) {
       board[i][y] = SHIP;
+      ship.addCell({i, y});
     }
   } else {
     for (int i = y; i < y + size; ++i) {
       board[x][i] = SHIP;
+      ship.addCell({x, i});
     }
   }
+  ships.push_back(ship);
 }
 
 bool Board::handleHit(int x, int y) {
@@ -175,15 +180,13 @@ bool Board::isHit(int x, int y) { return hits[x][y]; }
 
 void Board::displayRow(int row, bool showShips, int col) const {
   for (int j = 0; j < BOARD_SIZE; ++j) {
-    if (!showShips && col == j){
-      if (!hits[row][j]){
+    if (!showShips && col == j) {
+      if (!hits[row][j]) {
         cout << GREEN << '#' << ' ' << RESET_COLOR;
-      }
-      else{
+      } else {
         cout << RED_BG << '#' << RESET_COLOR << ' ';
       }
-    }
-    else if (showShips || hits[row][j]) {
+    } else if (showShips || hits[row][j]) {
       if (hits[row][j]) {
         if (board[row][j] == HIT) {
           cout << HIT_CELL << ' ';
@@ -210,20 +213,23 @@ Point Board::getRandomPoint() {
 
 void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
   clearScreen();
-  cout << "Place a ship of size " << CYAN << BOLD << size << RESET_COLOR << endl << endl;
-  cout << "Please use " << ITALIC << UNDERLINE << "wasd " << RESET_COLOR << "or "
-       << ITALIC << UNDERLINE << "arrow keys" << RESET_COLOR 
-       << " to move your ship, \nOr press the "
-       << BOLD << UNDERLINE << BLINKING << "[  spacebar  ]" << RESET_COLOR
+  cout << "Place a ship of size " << CYAN << BOLD << size << RESET_COLOR << endl
+       << endl;
+  cout << "Please use " << ITALIC << UNDERLINE << "wasd" << RESET_COLOR
+       << " or " << ITALIC << UNDERLINE << "arrow keys" << RESET_COLOR
+       << " to move your ship, \nOr press the " << BOLD << UNDERLINE << BLINKING
+       << "[  spacebar  ]" << RESET_COLOR
        << " to change its orientation. \nNote: upperleft corner will be "
           "fixed during rotation."
-       << endl << endl;
-  cout << "When the ship is" << RED << " red" << RESET_COLOR
+       << endl
+       << endl;
+  cout << "When the ship is " << RED_BG << "red" << RESET_COLOR
        << ", it is an invalid placement." << endl;
   cout << "When it is " << BOLD << GREEN << "green" << RESET_COLOR
        << ", it is valid!" << endl;
   cout << "Press the " << BOLD << CYAN << "Enter" << RESET_COLOR
-       << " key to place this ship." << endl << endl;
+       << " key to place this ship." << endl
+       << endl;
 
   cout << "  0 1 2 3 4 5 6 7 8 9\n";
   bool isValid = isValidPlacement(x, y, size, isVertical);
@@ -236,13 +242,13 @@ void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
           if (j < BOARD_SIZE - 1) { // if the block is not at the rightmost end,
                                     // add a space after it
             if (!(isValid)) {
-              cout << RED << SHIP << ' ' << RESET_COLOR;
+              cout << RED_BG << SHIP << RESET_COLOR << ' ';
             } else {
               cout << GREEN << SHIP << ' ' << RESET_COLOR;
             }
           } else {
             if (!(isValid)) { // at the rightmost end -> no space added
-              cout << RED << SHIP << RESET_COLOR;
+              cout << RED_BG << SHIP << RESET_COLOR;
             } else {
               cout << GREEN << SHIP << RESET_COLOR;
             }
@@ -258,13 +264,16 @@ void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
         if (y <= j && j < y + size && x == i) {
           if (j < BOARD_SIZE - 1) {
             if (!(isValid)) {
-              cout << RED << SHIP << ' ' << RESET_COLOR;
+              if (j!=y+size-1)
+                cout << RED_BG << SHIP << ' ' << RESET_COLOR;
+              else
+                cout << RED_BG << SHIP << RESET_COLOR << ' ';
             } else {
               cout << GREEN << SHIP << ' ' << RESET_COLOR;
             }
           } else {
             if (!(isValid)) {
-              cout << RED << SHIP << RESET_COLOR;
+              cout << RED_BG << SHIP << RESET_COLOR;
             } else {
               cout << GREEN << SHIP << RESET_COLOR;
             }

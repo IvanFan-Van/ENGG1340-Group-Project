@@ -13,6 +13,7 @@ private:
       computerBoard; // The board representing the computer's ships and attacks.
   bool playerTurn;   // A flag indicating whether it is the player's turn.
   GameLogic gameLogic; // An instance of the GameLogic class.
+  bool initialized; // A flag indicating whether the game has been initialized.
   /**
    * @brief Places the ships on the given board.
    *
@@ -25,16 +26,16 @@ private:
   void placeShips(Board &board, bool isPlayer);
 
   /**
-   * @brief Executes the player's move.
-   *
-   * This function is called when it is the player's turn to make a move.
+   * @brief Save the current game when quit.
    */
-  void playerMove();
+
+  bool playerMove();
 
   /**
    * @brief Executes the computer's move.
    *
    * This function is called when it is the computer's turn to make a move.
+   * Changed into bool to responds the user entred ESC
    */
   void computerMove();
 
@@ -53,6 +54,18 @@ public:
    * ships, and executing the turns until the game is over.
    */
   void start();
+
+  /**
+   * @brief Executes the player's move.
+   *
+   * This function is called when it is the player's turn to make a move.
+   */
+  bool loadGame(string filepath);
+  /**
+   * @brief Load the recoreded game in a file.
+   *
+   */
+  void saveGame();
 };
 
 #endif // BATTLESHIP_GAME_H
