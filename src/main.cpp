@@ -314,7 +314,7 @@ int main(int argc, char *argv[]) {
         5.  When all cells of a ship are hit, it is considered sunk.
         6.  The first player to sink all of their opponent's ships wins the game.
 
-        Implementation:
+        Controls:
         1.  First, place your own ships.
               Use "WASD" or arrow keys to navigate the board, 
               press the [  spacebar  ] to rotate the ship (with the upperleft corner fixed),
