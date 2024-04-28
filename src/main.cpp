@@ -253,7 +253,7 @@ int main(int argc, char *argv[]) {
       Game offlineGame = Game();
       offlineGame.start();
       cout << "Exit game\n";
-      offlineGame.saveGame();
+      // offlineGame.saveGame();
 
       break;
     }
@@ -304,9 +304,13 @@ int main(int argc, char *argv[]) {
       const string text = R"(
         Game Rules:
         1.  Each player has a fleet of ships placed on a 10x10 grid.
-        2.  The ships include an aircraft carrier (5 cells), battleship (4 cells), cruiser (3 cells), submarine (3 cells), and destroyer (2 cells).
+        2.  The ship consists of 
+            - one aircraft carrier (4 units), 
+            - two battleships (3 units), 
+            - three cruisers (2 units), 
+            - four submarines (1 unit).
         3.  Players take turns guessing the coordinates to target their opponent's ships.
-        4.  The grid is marked with hits ('X') and misses ('O') to keep track of the shots.
+        4.  The grid is marked with hits ('X') and misses ('O') to record the shots.
         5.  When all cells of a ship are hit, it is considered sunk.
         6.  The first player to sink all of their opponent's ships wins the game.
       )";
@@ -317,7 +321,7 @@ int main(int argc, char *argv[]) {
       break;
     }
     case 4: {
-      cout << "Thank You for Playing Battleship!\n";
+      printCentered("Thank You for Playing Battleship!\n", getTerminalWidth());
       return 0;
     }
     default: {
