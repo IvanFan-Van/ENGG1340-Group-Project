@@ -26,3 +26,10 @@ Controls:
 2.  If you select Man-Machine mode, skip to Step 3. If the player battle mode is selected, both players need to enter the same room number (eg.1111) to enter the same room to play the battle game.
 3.  Players should use the "WASD" or arrow keys on the keyboard to move your ships and press the [ spacebar ] to change ship's orientation.Finally press the Enter key to place these ships(Note: upperleft corner will be fixed during rotation.)
 4.  After placing the ship, the game begins and the player uses the "WASD" on the keyboard to select the location of the attack and the "ENTER" key to strike.
+
+Team Members:
+1. 3036223426 Wang PuiYuk: board.cpp; board.h; README; constants.h 
+2. 3036267692 Liu Mingyao: game.cpp; game.h; client_game.cpp; client_game.h; And some small change in game_logic.cpp
+3. 3036128066 Shi Wenqing: Realize keyboard-monitored control and colored interface [keyboard.cpp; game_logic.cpp; some functions in board.cpp and utilities.cpp]; server_game.cpp 
+4. 3036264547 Fan Xieyi: Implement game online version, fix and refactor team's bug and code. Complete the template framework for project
+5. 3036253689 Xiao Jingzhe: Responsible for game UI, including start menu and animations. Combined offline game mode and online game mode. Responsible for video making. 
