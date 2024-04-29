@@ -33,3 +33,6 @@ Team Members:
 3. 3036128066 Shi Wenqing: Realize keyboard-monitored control and colored interface [keyboard.cpp; game_logic.cpp; some functions in board.cpp and utilities.cpp]; server_game.cpp 
 4. 3036264547 Fan Xieyi: Implement game online version, fix and refactor team's bug and code. Complete the template framework for project
 5. 3036253689 Xiao Jingzhe: Responsible for game UI, including start menu and animations. Combined offline game mode and online game mode. Responsible for video making. 
+
+Video Link:
+https://www.youtube.com/watch?v=oWHRnDxxe6I
