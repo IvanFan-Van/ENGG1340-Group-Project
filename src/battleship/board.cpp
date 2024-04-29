@@ -211,10 +211,10 @@ Point Board::getRandomPoint() {
   return p;
 }
 
-void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
+void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical,
+                                  int remaining) {
   clearScreen();
-  cout << "Place a ship of size " << CYAN << BOLD << size << RESET_COLOR << endl
-       << endl;
+  cout << "Now please place your ships!" << endl << endl;
   cout << "Please use " << ITALIC << UNDERLINE << "wasd" << RESET_COLOR
        << " or " << ITALIC << UNDERLINE << "arrow keys" << RESET_COLOR
        << " to move your ship, \nOr press the " << BOLD << UNDERLINE << BLINKING
@@ -230,7 +230,9 @@ void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
   cout << "Press the " << BOLD << CYAN << "Enter" << RESET_COLOR
        << " key to place this ship." << endl
        << endl;
-
+  cout << "Place a ship of size " << CYAN << BOLD << size << RESET_COLOR << " ("
+       << remaining << " left)" << endl
+       << endl;
   cout << "  0 1 2 3 4 5 6 7 8 9\n";
   bool isValid = isValidPlacement(x, y, size, isVertical);
   for (int i = 0; i < BOARD_SIZE; ++i) {
@@ -264,7 +266,7 @@ void Board::DisplayColorPlacement(int x, int y, int size, bool isVertical) {
         if (y <= j && j < y + size && x == i) {
           if (j < BOARD_SIZE - 1) {
             if (!(isValid)) {
-              if (j!=y+size-1)
+              if (j != y + size - 1)
                 cout << RED_BG << SHIP << ' ' << RESET_COLOR;
               else
                 cout << RED_BG << SHIP << RESET_COLOR << ' ';

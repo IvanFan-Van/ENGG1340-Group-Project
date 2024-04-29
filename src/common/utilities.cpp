@@ -31,7 +31,7 @@ void displayBoardsSideBySide(const Board &playerBoard, Board &opponentBoard,
        << "Your game status will be " << GREEN << "saved" << RESET_COLOR
        << ", and you will return to the main menu." << endl
        << "Have fun!" << endl
-       << endl;
+       << endl << endl;
   cout << "  0 1 2 3 4 5 6 7 8 9      0 1 2 3 4 5 6 7 8 9\n";
   for (int i = 0; i < BOARD_SIZE; ++i) {
     // Display player's board row
