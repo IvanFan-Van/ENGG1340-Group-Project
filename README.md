@@ -27,6 +27,14 @@ Controls:
 3.  Players should use the "WASD" or arrow keys on the keyboard to move your ships and press the [ spacebar ] to change ship's orientation. Finally press the Enter key to place these ships(Note: upperleft corner will be fixed during rotation.)
 4.  After placing the ship, the game begins and the player uses the "WASD" on the keyboard to select the location of the attack and the "ENTER" key to strike.
 
+The list of features:
+1. In the man-machine battle mode of our game, the computer side uses the generation of random game sets or events to randomly place ships and randomly bomb the map.
+2. In the game code we use two 2-layer arrays, namely board[][] and hit[][], which can be used to store whether the square has a piece and whether it has been hit.
+3. In the game code we use dynamic memory management, such as "main.cpp","ship.h","board.h", etc., which include <vector>.
+4. In "Keyboard.cpp" we implemented the code to receive the player's positioning with the keyboard, and in "game.cpp" we wrote the code to quit the game midway and save the game to prevent the player from accidentally losing the game data during the game.
+5. The game's code is divided into sections such as "board.cpp","game.cpp","keyboard.cpp", and client_game.cpp", which are then combined with its header file using a makefile to form a complete game.
+6. The code of the game has some comments to explain the function of the code, so that people can see at a glance, the function is conducive to team cooperation, but also help others to understand the operation of the code.
+
 Team Members:
 1. 3036223426 Wang PuiYuk: board.cpp; board.h; README; constants.h 
 2. 3036267692 Liu Mingyao: game.cpp; game.h; client_game.cpp; client_game.h; And some small change in game_logic.cpp
