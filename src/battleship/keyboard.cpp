@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include "battleship/keyboard.h"
 using namespace std;
-char keyboard(){
+char keyboard(){//monitor the keyboard and get valid user input
 	char key;
 	struct termios new_settings;
 	struct termios stored_settings;
